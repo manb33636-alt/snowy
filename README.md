@@ -16,6 +16,12 @@ Zonder Twelve Data-key draaien aandelen/ETF's/indices op een ingebakken snapshot
 
 ## Starten
 
+Op Windows: dubbelklik `start-windows.bat`. Dat installeert de eerste keer zelf
+de pakketten en opent de app daarna in je browser. Node.js moet geïnstalleerd
+zijn ([nodejs.org](https://nodejs.org), LTS-versie).
+
+Handmatig, op elk systeem:
+
 ```bash
 npm install
 npm run dev
@@ -23,7 +29,18 @@ npm run dev
 
 Open daarna de getoonde lokale URL in je browser. Demo-wachtwoord: `sneeuw123`.
 
+## Één los bestand, zonder installatie
+
+```bash
+npm run build:single
+```
+
+Levert `dist-single/index.html` op: de hele app in één bestand zonder externe
+verwijzingen, te openen door erop te dubbelklikken. Handig om te delen of om de
+app te gebruiken zonder Node.js.
+
 ## Structuur
 
 - `src/SnowyTracks.jsx` — de volledige app (componenten, marktstore, indicatoren, CSS)
 - `src/main.jsx` — entrypoint dat de app mount
+- `start-windows.bat` — startknop voor Windows
