@@ -2,6 +2,17 @@
 
 Persoonlijke marktassistent met echte live data — aandelen, crypto, ETF's, forex en commodities in een dashboard met vensters, technische analyse, papertrading en signaallogging.
 
+Deze repository bevat drie onderdelen:
+
+| Map | Wat het is |
+| --- | --- |
+| `/` + `src/` | **Snowy Tracks v2 live** — de React-frontend (waar aan gewerkt wordt) |
+| `backend/` | **Snowy_Tracks API** — FastAPI-backend met marktdata, papertrading-portefeuille en historie |
+| `bot/` | **De crypto-tradingbot** — losstaand 24/7-experiment met eigen dashboard |
+
+Uitleg per onderdeel staat in [`CLAUDE.md`](CLAUDE.md); de bot heeft een eigen
+overdrachtsdocument in [`docs/BOT-OVERDRACHT.md`](docs/BOT-OVERDRACHT.md).
+
 **Er wordt nooit echt gehandeld**: Testing = papertrading met nepgeld, Live Mode logt alleen signalen (er is bewust geen broker-koppeling).
 
 ## Databronnen

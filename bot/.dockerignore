@@ -1,0 +1,23 @@
+# Nooit meesturen naar de server: geheimen, lokale rommel en je lokale stand.
+.env
+venv/
+__pycache__/
+*.pyc
+*.png
+
+# Lokale bot-stand hoort NIET in het image (die staat online op het volume).
+portfolio_state.json
+baseline.json
+equity_history.jsonl
+trades.log
+news_log.txt
+report_log.txt
+retune_report.txt
+retune_nominations.json
+scheduler_state.json
+job_*.log
+*_cron.log
+live_out.log
+
+.git/
+.DS_Store

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snowy Tracks — Trading Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---- Snowy Tracks thema (kleuren van het originele dashboard) ---- */
+  :root{
+    --bg:#0B1420; --bg2:#14263a; --panel:#131F2E; --panel2:#0E1A28;
+    --frost:#8ECAE6; --frostdim:rgba(142,202,230,0.15); --frostline:rgba(142,202,230,0.12);
+    --text:#F4F8FB; --sub:#7C93AC; --sub2:#5A7391;
+    --mint:#63D2A4; --ember:#E8846B; --amber:#E7C46B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+    min-height:100vh;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1160px;margin:0 auto;padding:22px 18px 60px}
+  .brand{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.02em}
+  a{color:var(--frost)}
+  /* sneeuw */
+  .flakes{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .flake{position:absolute;top:-20px;color:rgba(228,242,255,.45);animation:fall linear infinite}
+  @keyframes fall{to{transform:translateY(105vh) rotate(360deg)}}
+
+  /* ---- login ---- */
+  #login{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% -10%,var(--bg2) 0%,var(--bg) 55%),var(--bg);padding:24px}
+  .card{background:rgba(19,31,46,.8);border:1px solid rgba(142,202,230,.18);border-radius:18px;
+    padding:38px 32px;max-width:380px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5);backdrop-filter:blur(6px)}
+  .lbrand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:8px;font-size:22px}
+  .lsub{text-align:center;color:var(--sub);font-size:13px;margin-bottom:26px}
+  input[type=password]{width:100%;background:#0d1826;border:1px solid var(--frostdim);border-radius:11px;
+    color:var(--text);padding:13px 14px;font-size:15px;font-family:inherit;outline:none}
+  input[type=password]:focus{border-color:var(--frost)}
+  .btn{width:100%;margin-top:12px;background:var(--frost);color:#08131e;border:none;border-radius:11px;
+    padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+  .btn:hover{filter:brightness(1.06)}
+  .err{color:var(--ember);font-size:13px;margin-top:12px;text-align:center;min-height:18px}
+
+  /* ---- header ---- */
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;position:relative;z-index:1}
+  .logo{display:flex;align-items:center;gap:10px;font-size:19px}
+  .paper{font-size:10.5px;font-weight:600;letter-spacing:.04em;color:var(--amber);
+    border:1px solid rgba(231,196,107,.4);border-radius:20px;padding:3px 10px}
+  .spacer{flex:1}
+  .stamp{font-size:11.5px;color:var(--sub2);text-align:right;line-height:1.5}
+  .locklink{background:none;border:1px solid var(--frostdim);color:var(--sub);border-radius:9px;
+    padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+  .locklink:hover{border-color:var(--frost);color:var(--frost)}
+
+  /* ---- panels & grid ---- */
+  .grid{display:grid;gap:14px;position:relative;z-index:1}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .panel{background:var(--panel);border:1px solid var(--frostline);border-radius:14px;padding:16px 18px}
+  .stat .k{font-size:11.5px;color:var(--sub);letter-spacing:.02em;text-transform:uppercase}
+  .stat .v{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:600;margin-top:6px}
+  .stat .sub{font-size:12px;color:var(--sub);margin-top:3px}
+  .pos{color:var(--mint)} .neg{color:var(--ember)} .flat{color:var(--sub)}
+  .ptitle{font-size:12.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;
+    display:flex;align-items:center;gap:7px}
+  .two{grid-template-columns:1fr 1fr}
+  @media(max-width:820px){.two{grid-template-columns:1fr}}
+
+  /* verdict */
+  .verdict{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .vbadge{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;white-space:nowrap}
+  .vdetail{color:var(--sub);font-size:13px}
+  .hb{background:rgba(232,132,107,.12);border:1px solid rgba(232,132,107,.4);color:#f0a894;
+    border-radius:11px;padding:11px 14px;font-size:13px;margin-bottom:14px;position:relative;z-index:1}
+
+  /* tabel */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--sub);font-weight:500;font-size:11px;text-transform:uppercase;
+    letter-spacing:.03em;padding:0 10px 10px;border-bottom:1px solid var(--frostline)}
+  th.r,td.r{text-align:right}
+  td{padding:11px 10px;border-bottom:1px solid rgba(142,202,230,.06)}
+  tr:last-child td{border-bottom:none}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px}
+  .dot.on{background:var(--mint);box-shadow:0 0 8px rgba(99,210,164,.6)}
+  .dot.off{background:#3a4a5c}
+  .csym{font-weight:600} .cname{color:var(--sub2);font-size:11.5px}
+  .chip{font-size:10px;color:var(--sub);border:1px solid var(--frostdim);border-radius:6px;padding:2px 6px}
+  .tag{font-size:10px;font-weight:600;border-radius:6px;padding:2px 7px}
+  .tag.buy{color:var(--mint);background:rgba(99,210,164,.12)}
+  .tag.sell{color:var(--ember);background:rgba(232,132,107,.12)}
+  .mtype{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(142,202,230,.06);font-size:13px}
+  .mtype:last-child{border:none}
+  .bar{height:6px;border-radius:4px;background:#0d1826;overflow:hidden;margin-top:4px}
+  .bar>i{display:block;height:100%}
+  .muted{color:var(--sub);font-size:12.5px;line-height:1.6}
+  .loading{text-align:center;color:var(--sub);padding:60px;font-size:14px}
+  svg .grid-l{stroke:rgba(142,202,230,.08)}
+  .foot{margin-top:26px;text-align:center;color:var(--sub2);font-size:11.5px;line-height:1.7;position:relative;z-index:1}
+</style>
+</head>
+<body>
+<div class="flakes" id="flakes"></div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <div class="card">
+    <div class="lbrand"><span>❄️</span><span class="brand">Snowy Tracks</span></div>
+    <div class="lsub">Dashboard van je trading bot · paper trading</div>
+    <form id="loginForm">
+      <input type="password" id="pw" placeholder="Wachtwoord" autocomplete="off" autofocus>
+      <button class="btn" type="submit">Ontgrendelen</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div class="logo"><span>❄️</span><span class="brand">Snowy Tracks</span></div>
+    <span class="paper">● PAPER TRADING — NEPGELD</span>
+    <div class="spacer"></div>
+    <div class="stamp" id="stamp"></div>
+    <button class="locklink" id="lockBtn">🔒 Vergrendel</button>
+  </header>
+
+  <div id="content"><div class="loading">Bot-stand laden…</div></div>
+
+  <div class="foot">
+    Snowy Tracks · dashboard door je broertje, gekoppeld aan de echte bot.<br>
+    MOMENTOPNAME van 2026-07-17 00:07:08 — voor live data: draai <code>python dashboard_api.py</code>. Er gaat nooit echt geld om.
+  </div>
+</div>
+
+<script>
+/* ---------- sneeuw ---------- */
+(function(){
+  const box=document.getElementById('flakes');
+  const marks=['❄','❅','•','·'];
+  for(let i=0;i<26;i++){
+    const f=document.createElement('div');
+    f.className='flake'; f.textContent=marks[i%marks.length];
+    f.style.left=Math.random()*100+'%';
+    f.style.fontSize=(7+Math.random()*13)+'px';
+    f.style.animationDuration=(6+Math.random()*10)+'s';
+    f.style.animationDelay=(-Math.random()*12)+'s';
+    box.appendChild(f);
+  }
+})();
+
+/* ---------- login ---------- */
+const PW="sneeuw123";
+document.getElementById('loginForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=document.getElementById('pw').value;
+  if(v===PW){
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').style.display='block';
+    load(); setInterval(load,30000);
+  }else{
+    document.getElementById('loginErr').textContent='Onjuist wachtwoord. Probeer opnieuw.';
+    document.getElementById('pw').value='';
+  }
+});
+document.getElementById('lockBtn').addEventListener('click',()=>location.reload());
+
+/* ---------- helpers ---------- */
+const fmt=n=>n==null?'—':n.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+const money=n=>n==null?'—':n.toLocaleString('nl-NL',{minimumFractionDigits:0,maximumFractionDigits:0})+' USDT';
+const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(1)+'%';
+const cls=n=>n==null?'flat':n>0?'pos':n<0?'neg':'flat';
+const price=n=>{if(n==null)return'—';return n<1?n.toLocaleString('nl-NL',{minimumFractionDigits:4,maximumFractionDigits:6}):n.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});};
+const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ---------- equity-grafiek (inline SVG) ---------- */
+function chart(series){
+  if(!series||series.length<2) return '<div class="muted">Nog te weinig dagen voor een grafiek.</div>';
+  const W=100,H=34,vals=series.map(d=>d.total);
+  const mn=Math.min(...vals),mx=Math.max(...vals),rng=(mx-mn)||1;
+  const x=i=>i/(series.length-1)*W;
+  const y=v=>H-2-((v-mn)/rng)*(H-4);
+  const line=series.map((d,i)=>`${x(i).toFixed(2)},${y(d.total).toFixed(2)}`).join(' ');
+  const area=`0,${H} `+line+` ${W},${H}`;
+  const up=vals[vals.length-1]>=vals[0];
+  const col=up?'var(--mint)':'var(--ember)';
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:120px">
+    <line class="grid-l" x1="0" y1="${(H/2).toFixed(1)}" x2="${W}" y2="${(H/2).toFixed(1)}"/>
+    <polygon points="${area}" fill="${col}" opacity="0.10"/>
+    <polyline points="${line}" fill="none" stroke="${col}" stroke-width="0.7" stroke-linejoin="round"/>
+  </svg>
+  <div class="muted" style="display:flex;justify-content:space-between;margin-top:2px">
+    <span>${esc(series[0].date)}</span><span>${esc(series[series.length-1].date)}</span></div>`;
+}
+
+/* ---------- render ---------- */
+function load(){
+  fetch('/api/state').then(r=>r.json()).then(render).catch(err=>{
+    document.getElementById('content').innerHTML=
+      `<div class="panel"><div class="neg">Kon de bot-stand niet laden: ${esc(err)}</div>
+       <div class="muted" style="margin-top:8px">Draait de bot? Start 'm met <code>./bot.sh start</code>.</div></div>`;
+  });
+}
+
+function render(s){
+  const o=s.overview, e=s.evaluation;
+  document.getElementById('stamp').innerHTML=
+    `laatste ronde: ${esc(s.updated||'—')}<br>ververst: ${esc(s.generated)}`;
+
+  let h='';
+  if(s.heartbeat) h+=`<div class="hb">${esc(s.heartbeat)}</div>`;
+
+  /* overzichtskaarten */
+  h+='<div class="grid cards" style="margin-bottom:14px">';
+  h+=card('Totale waarde',money(o.total_value),`start ${money(o.total_start)}`);
+  h+=card('Winst / verlies',pct(o.pnl_pct),`${o.pnl>=0?'+':''}${fmt(o.pnl)} USDT`,cls(o.pnl_pct));
+  h+=card('In de markt',`${o.in_market} / ${o.max_positions}`,`van ${o.n_coins} munten`);
+  if(o.margin!=null) h+=card('Bot vs markt',pct(o.margin),`bot ${pct(o.bot_since)} · markt ${pct(o.market_since)}`,cls(o.margin));
+  if(o.btc_hold!=null) h+=card('vs BTC vasthouden',pct(o.pnl_pct-o.btc_hold),`BTC-hold ${pct(o.btc_hold)}`,cls(o.pnl_pct-o.btc_hold));
+  if(e.drawdown!=null) h+=card('Grootste dip',e.drawdown.toFixed(1)+'%',`max toegestaan 15%`,e.drawdown>15?'neg':'flat');
+  h+='</div>';
+
+  /* verdict */
+  h+=`<div class="panel" style="margin-bottom:14px">
+    <div class="ptitle">Kan de bot voor het echt?</div>
+    <div class="verdict"><span class="vbadge">${esc(e.verdict)}</span>
+    <span class="vdetail">${esc(e.detail)}</span></div>
+    <div class="muted" style="margin-top:10px">
+      ${e.n_round} afgeronde trades · ${e.n_events} onafhankelijke instapmomenten ·
+      gem. ${e.mean_net==null?'—':pct(e.mean_net)} per trade ·
+      win ${e.win_rate==null?'—':e.win_rate+'%'} <span class="chip">info</span>
+    </div></div>`;
+
+  /* twee kolommen: grafiek + markt-types */
+  h+='<div class="grid two" style="margin-bottom:14px">';
+  h+=`<div class="panel"><div class="ptitle">📈 Vermogen over tijd</div>${chart(s.equity)}</div>`;
+  h+='<div class="panel"><div class="ptitle">🧩 Per markt-type</div>';
+  const maxAbs=Math.max(1,...s.market_types.map(m=>Math.abs(m.mean)));
+  s.market_types.forEach(m=>{
+    const w=Math.abs(m.mean)/maxAbs*100, c=m.mean>0?'var(--mint)':m.mean<0?'var(--ember)':'var(--sub)';
+    h+=`<div class="mtype"><div><div>${esc(m.type)} <span class="chip">${m.n}</span></div>
+      <div class="bar"><i style="width:${w}%;background:${c}"></i></div></div>
+      <div class="${cls(m.mean)}" style="font-weight:600">${pct(m.mean)}</div></div>`;
+  });
+  h+='</div></div>';
+
+  /* munten-tabel */
+  h+='<div class="panel" style="margin-bottom:14px"><div class="ptitle">🪙 Munten</div><table><thead><tr>'+
+     '<th>Munt</th><th class="r">Koers</th><th class="r">Waarde</th><th class="r">W/V</th>'+
+     '<th class="r">Trades</th><th>Type</th></tr></thead><tbody>';
+  s.coins.slice().sort((a,b)=>(b.pnl_pct??-999)-(a.pnl_pct??-999)).forEach(c=>{
+    h+=`<tr><td><span class="dot ${c.in_position?'on':'off'}"></span>
+      <span class="csym">${esc(c.short)}</span> <span class="cname">${esc(c.name)}</span></td>
+      <td class="r">${price(c.price)}</td><td class="r">${c.value==null?'—':fmt(c.value)}</td>
+      <td class="r ${cls(c.pnl_pct)}" style="font-weight:600">${pct(c.pnl_pct)}</td>
+      <td class="r">${c.n_trades}</td><td><span class="chip">${esc(c.market_type)}</span></td></tr>`;
+  });
+  h+='</tbody></table></div>';
+
+  /* trades + nieuws/triggers */
+  h+='<div class="grid two">';
+  h+='<div class="panel"><div class="ptitle">🧾 Laatste transacties</div>';
+  if(!s.trades.length){ h+='<div class="muted">Nog geen transacties.</div>'; }
+  else{ h+='<table><tbody>';
+    s.trades.slice(0,12).forEach(t=>{
+      const buy=t.action==='BUY', sell=!buy;
+      h+=`<tr><td style="color:var(--sub2);font-size:11.5px;white-space:nowrap">${esc(t.time.slice(5,16))}</td>
+        <td class="csym">${esc(t.symbol)}</td>
+        <td><span class="tag ${buy?'buy':'sell'}">${esc(t.action)}</span></td>
+        <td class="r">${price(t.price)}</td>
+        <td class="r"><span class="chip">${esc(t.tag||'—')}</span></td></tr>`;
+    });
+    h+='</tbody></table>'; }
+  h+='</div>';
+
+  h+='<div class="panel"><div class="ptitle">📰 Nieuws & signaal-bron</div>';
+  h+=`<div class="muted" style="margin-bottom:12px">Laatste nieuws-sentiment:
+      <b class="${cls(s.sentiment)}">${s.sentiment==null?'—':(s.sentiment>=0?'+':'')+s.sentiment.toFixed(2)}</b></div>`;
+  const tags=Object.entries(s.triggers);
+  if(!tags.length){ h+='<div class="muted">Nog geen afgeronde trades om te vergelijken.</div>'; }
+  else{ h+='<table><thead><tr><th>Bron</th><th class="r">Trades</th><th class="r">Gem.</th><th class="r">Win</th></tr></thead><tbody>';
+    tags.forEach(([tag,v])=>{
+      h+=`<tr><td>${esc(tag)}</td><td class="r">${v.n}</td>
+        <td class="r ${cls(v.mean)}">${pct(v.mean)}</td><td class="r">${v.win}%</td></tr>`;
+    });
+    h+='</tbody></table><div class="muted" style="margin-top:8px">Verdient de nieuws-laag zijn plek? Vergelijk TECH vs NEWS.</div>'; }
+  h+='</div></div>';
+
+  document.getElementById('content').innerHTML=h;
+}
+
+function card(k,v,sub,klass){
+  return `<div class="panel stat"><div class="k">${esc(k)}</div>
+    <div class="v ${klass||''}">${esc(v)}</div><div class="sub">${esc(sub||'')}</div></div>`;
+}
+</script>
+
+<script>
+window.__SNAPSHOT__ = {"updated": "2026-07-16 22:03:58", "generated": "2026-07-17 00:07:08", "heartbeat": null, "overview": {"total_value": 10193.62, "total_start": 10000.0, "pnl": 193.62, "pnl_pct": 1.94, "in_market": 2, "max_positions": 5, "n_coins": 10, "bot_since": -0.13, "market_since": 0.83, "margin": -0.96, "btc_hold": 6.82, "since": "2026-07-01"}, "coins": [{"symbol": "BTC/USDT", "short": "BTC", "name": "Bitcoin", "price": 64271.84, "value": 1031.75, "pnl_pct": 3.17, "in_position": false, "n_trades": 4, "market_type": "large-cap"}, {"symbol": "ETH/USDT", "short": "ETH", "name": "Ethereum", "price": 1875.59, "value": 1073.26, "pnl_pct": 7.33, "in_position": false, "n_trades": 2, "market_type": "large-cap"}, {"symbol": "SOL/USDT", "short": "SOL", "name": "Solana", "price": 75.81, "value": 977.78, "pnl_pct": -2.22, "in_position": false, "n_trades": 4, "market_type": "smart-contract"}, {"symbol": "BNB/USDT", "short": "BNB", "name": "BNB", "price": 575.8, "value": 1067.58, "pnl_pct": 6.76, "in_position": true, "n_trades": 3, "market_type": "large-cap"}, {"symbol": "XRP/USDT", "short": "XRP", "name": "XRP", "price": 1.1, "value": 991.24, "pnl_pct": -0.88, "in_position": true, "n_trades": 5, "market_type": "betaling"}, {"symbol": "ADA/USDT", "short": "ADA", "name": "Cardano", "price": 0.16, "value": 977.75, "pnl_pct": -2.23, "in_position": false, "n_trades": 2, "market_type": "smart-contract"}, {"symbol": "DOGE/USDT", "short": "DOGE", "name": "Dogecoin", "price": 0.07, "value": 977.01, "pnl_pct": -2.3, "in_position": false, "n_trades": 2, "market_type": "meme"}, {"symbol": "AVAX/USDT", "short": "AVAX", "name": "Avalanche", "price": 6.6, "value": 1000.0, "pnl_pct": 0.0, "in_position": false, "n_trades": 0, "market_type": "smart-contract"}, {"symbol": "LINK/USDT", "short": "LINK", "name": "Chainlink", "price": 8.41, "value": 1097.25, "pnl_pct": 9.73, "in_position": false, "n_trades": 2, "market_type": "smart-contract"}, {"symbol": "LTC/USDT", "short": "LTC", "name": "Litecoin", "price": 45.25, "value": 1000.0, "pnl_pct": 0.0, "in_position": false, "n_trades": 0, "market_type": "betaling"}], "trades": [{"time": "2026-07-16 13:46:43", "symbol": "ADA", "action": "SELL", "price": 0.16241875, "value": 977.7493565754843, "tag": "TECH"}, {"time": "2026-07-16 12:45:52", "symbol": "BTC", "action": "SELL", "price": 64057.955, "value": 1031.7454560513938, "tag": "TECH"}, {"time": "2026-07-16 10:44:08", "symbol": "SOL", "action": "SELL", "price": 76.371795, "value": 977.7798983783618, "tag": "TECH"}, {"time": "2026-07-15 18:44:29", "symbol": "SOL", "action": "BUY", "price": 78.10903499999999, "value": 1001.0226183492326, "tag": "NEWS"}, {"time": "2026-07-15 18:44:29", "symbol": "XRP", "action": "BUY", "price": 1.12686315, "value": 1015.4510609868818, "tag": "NEWS"}, {"time": "2026-07-15 18:44:29", "symbol": "ADA", "action": "BUY", "price": 0.16578284999999998, "value": 999.0, "tag": "NEWS"}, {"time": "2026-07-15 12:00:00", "symbol": "LINK", "action": "TAKE-PROFIT", "price": 8.532697866825, "value": 1097.2521994499998, "tag": "RISK"}, {"time": "2026-07-13 17:00:00", "symbol": "XRP", "action": "TRAILING-STOP", "price": 1.05857045, "value": 1016.4675285153971, "tag": "RISK"}, {"time": "2026-07-13 03:00:00", "symbol": "DOGE", "action": "TRAILING-STOP", "price": 0.07178409, "value": 977.0062929251707, "tag": "RISK"}, {"time": "2026-07-09 23:37:04", "symbol": "XRP", "action": "BUY", "price": 1.0979486999999999, "value": 1055.3349074438709, "tag": "TECH"}, {"time": "2026-07-09 23:37:04", "symbol": "DOGE", "action": "BUY", "price": 0.073326645, "value": 999.0, "tag": "TECH"}, {"time": "2026-07-09 16:35:11", "symbol": "BTC", "action": "BUY", "price": 63059.864174999995, "value": 1016.6864548977761, "tag": "TECH"}, {"time": "2026-07-09 16:35:11", "symbol": "BNB", "action": "BUY", "price": 571.275495, "value": 1059.1946961413423, "tag": "TECH"}, {"time": "2026-07-09 16:35:11", "symbol": "LINK", "action": "BUY", "price": 7.7608785, "value": 998.9999999999999, "tag": "TECH"}, {"time": "2026-07-06 01:52:22", "symbol": "ETH", "action": "SELL", "price": 1789.105, "value": 1073.2588379827719, "tag": null}, {"time": "2026-07-06 01:52:22", "symbol": "SOL", "action": "SELL", "price": 81.77909, "value": 1002.0246429922248, "tag": null}, {"time": "2026-07-06 01:52:22", "symbol": "BNB", "action": "SELL", "price": 591.254225, "value": 1060.2549510924348, "tag": null}, {"time": "2026-07-06 01:52:22", "symbol": "XRP", "action": "SELL", "price": 1.157421, "value": 1056.3912987426136, "tag": null}, {"time": "2026-07-05 21:51:10", "symbol": "BTC", "action": "SELL", "price": 62788.91983500001, "value": 1017.7041590568329, "tag": null}, {"time": "2026-07-02 15:41:26", "symbol": "BTC", "action": "BUY", "price": 61573.301264999995, "value": 998.9999999999999, "tag": null}, {"time": "2026-07-02 15:41:26", "symbol": "ETH", "action": "BUY", "price": 1663.65141, "value": 999.0, "tag": null}, {"time": "2026-07-02 15:41:26", "symbol": "SOL", "action": "BUY", "price": 81.45070499999999, "value": 999.0000000000001, "tag": null}, {"time": "2026-07-02 15:41:26", "symbol": "XRP", "action": "BUY", "price": 1.0934464499999998, "value": 999.0, "tag": null}, {"time": "2026-07-02 00:03:52", "symbol": "BNB", "action": "BUY", "price": 556.5381299999999, "value": 999.0, "tag": null}], "equity": [{"date": "2026-07-06", "total": 5209.63}, {"date": "2026-07-07", "total": 10209.63}, {"date": "2026-07-08", "total": 10209.63}, {"date": "2026-07-09", "total": 10209.63}, {"date": "2026-07-10", "total": 10267.81}, {"date": "2026-07-11", "total": 10270.57}, {"date": "2026-07-12", "total": 10322.7}, {"date": "2026-07-15", "total": 10252.68}, {"date": "2026-07-16", "total": 10259.53}], "sentiment": 0.5, "triggers": {"?": {"n": 5, "mean": 4.19, "win": 100}, "TECH": {"n": 4, "mean": 1.26, "win": 50}, "NEWS": {"n": 2, "mean": -2.32, "win": 0}}, "market_types": [{"type": "large-cap", "mean": 5.75, "n": 3}, {"type": "smart-contract", "mean": 1.32, "n": 4}, {"type": "betaling", "mean": -0.44, "n": 2}, {"type": "meme", "mean": -2.3, "n": 1}], "evaluation": {"n_round": 11, "n_events": 5, "win_rate": 64, "mean_net": 1.94, "drawdown": 0.7, "verdict": "⏳ TE VROEG", "detail": "pas 11 afgeronde trades / 5 instapmomenten (min 20 / 10)"}};
+load = function(){ try{ render(window.__SNAPSHOT__); }catch(e){ document.getElementById('content').innerHTML='<div class=\"panel\">Kon momentopname niet tonen: '+e+'</div>'; } };
+</script>
+</body>
+</html>

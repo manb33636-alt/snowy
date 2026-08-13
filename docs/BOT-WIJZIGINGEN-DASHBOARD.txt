@@ -1,0 +1,31 @@
+Wat er in dit pakket is veranderd
+==================================
+
+dashboard.html is vervangen door een volledige bureaublad-versie:
+- Sleepbare, herschaalbare vensters + taakbalk (zoals het React-ontwerp van je broertje)
+- 🧭 Markt Explorer: mappen-navigatie. Alleen "Crypto" is gevuld (de 10 munten die
+  de bot volgt) — de andere mappen (Stocks/ETF's/Forex/Commodities/Indices) tonen
+  eerlijk "nog niet actief", want deze bot handelt daar niet in. Zoekbalk erbovenop.
+  Klik op een munt → apart detailvenster met prijs, waarde, status en de echte
+  transactiegeschiedenis voor die munt.
+- 🧪 Posities: alleen-lezen overzicht per munt, winrate-ring, en een uitsplitsing
+  van resultaat per signaaltype (TECH/NEWS/RISK).
+- 📊 Evaluatie: vervangt een "Live handelen"-schakelaar bewust, want deze bot is
+  met opzet altijd paper trading (harde regel, zie CLAUDE.md). Toont het
+  go/no-go-oordeel, bot-vs-markt, vs BTC-vasthouden, drawdown en de heartbeat-status.
+- 💼 Portfolio: kaarten, groeigrafiek met periodefilters (vandaag/1w/1m/3m/6m/1j/alles),
+  verdeling per markttype, winst/verlies, dagelijkse prestaties, en een
+  transactiegeschiedenis met filters.
+
+Alles leest exact hetzelfde /api/state-endpoint als voorheen — dashboard_api.py
+hoefde niet aangepast te worden. Niets is verzonnen: waar een veld niet door de
+bot gelogd wordt (bv. "Resultaat" en "Confidence" per losse transactie), staat
+dat er expliciet bij in plaats van een verzonnen getal.
+
+De oude, eenvoudigere dashboard.html is niet apart bewaard in dit pakket omdat
+dashboard-momentopname.html al een losse snapshot is — vergelijk die gerust.
+
+Starten: zelfde als altijd —
+  cd snowy_tracks_final
+  ./venv/bin/python dashboard_api.py
+  → http://localhost:8000, wachtwoord: sneeuw123

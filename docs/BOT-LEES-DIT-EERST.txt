@@ -1,0 +1,60 @@
+════════════════════════════════════════════════════════════════════
+   TRADING BOT — COMPLETE MAP
+   Alles in één map: de bot + het dashboard + de uitleg.
+════════════════════════════════════════════════════════════════════
+
+Hoi Tim,
+
+In deze map staat je HELE trading bot bij elkaar, klaar om te bewaren of naar
+een ander Claude-account te sturen.
+
+
+WAT WIL JE DOEN?
+────────────────────────────────────────────────────────────────────
+
+1) SNEL JE DASHBOARD ZIEN (zonder iets te starten)
+   → Dubbelklik op:   dashboard-momentopname.html
+   Dat opent in je browser. Wachtwoord: sneeuw123
+   Dit is een FOTO van je bot-stand op het moment dat ik deze map maakte
+   (17 juli 2026). De cijfers bewegen dus niet mee — het is een momentopname.
+
+2) HET LIVE, MEEBEWEGENDE DASHBOARD
+   Dat heeft de draaiende bot nodig. Gebruik je bestaande map ~/tradingbot
+   (daar staat de "venv" met alle pakketten) en typ in de Terminal:
+       cd ~/tradingbot
+       ./venv/bin/python dashboard_api.py
+   Open dan http://localhost:8000  (wachtwoord: sneeuw123)
+
+3) NAAR EEN ANDER CLAUDE-ACCOUNT OVERBRENGEN
+   → Geef Claude het bestand:   CLAUDE.md
+   Daar staat ALLES in: hoe de bot werkt, hoe het dashboard werkt, de keuzes,
+   de valkuilen en de huidige stand. Een nieuwe Claude snapt daarmee meteen
+   het hele plaatje.
+
+
+DE BELANGRIJKSTE BESTANDEN
+────────────────────────────────────────────────────────────────────
+   CLAUDE.md ................ HET overdrachtsdocument (lees dit voor de uitleg)
+   dashboard-momentopname.html  Dubbelklik → je dashboard met echte data
+   dashboard.html ........... Het live dashboard (werkt met dashboard_api.py)
+   dashboard_api.py ......... De mini-webserver die de echte data levert
+   live.py .................. De bot zelf (de 24/7-loop)
+   config.py ................ Alle instellingen op één plek
+   test_bot.py .............. De testsuite (python test_bot.py → 0 gefaald)
+   README.md ................ Uitleg + alle commando's
+   DEPLOY_ORACLE.md ......... De bot gratis 24/7 online zetten
+   snowy_tracks_original.jsx  Het originele dashboard van je broertje (bewaard)
+
+
+TWEE DINGEN OM TE WETEN
+────────────────────────────────────────────────────────────────────
+ • Je geheime sleutels (.env, met je Telegram-token) zitten BEWUST NIET in
+   deze map — die blijven veilig op je Mac. Wil je de bot ergens anders echt
+   draaien, kopieer dan .env er los bij (zie DEPLOY_ORACLE.md).
+
+ • De "venv" (de map met alle Python-pakketten, ~330 MB) zit er ook niet in;
+   die is te groot en overal opnieuw te installeren met:
+       pip install -r requirements.txt
+
+Je echte bot in ~/tradingbot draait gewoon door — deze map is een KOPIE.
+Er gaat nergens echt geld om: alles is paper trading (nepgeld).

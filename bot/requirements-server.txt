@@ -1,0 +1,15 @@
+# Alleen wat de LIVE bot + de geplande taken nodig hebben.
+# Bewust ZONDER matplotlib en scikit-learn: die zijn alleen nodig voor de
+# grafieken (plot.py, optimize.py) en de ML-voorspeller (predict.py), en die
+# draai je handmatig op je Mac — niet op de server. Scheelt veel bouwtijd en
+# geheugen, wat telt op een gratis server.
+#
+# Getest: live.py, analyze.py, retune.py, report.py, evaluate.py en
+# validate_coins.py draaien allemaal zonder die twee pakketten.
+
+ccxt==4.5.62            # koersdata van de beurs
+pandas==2.3.3           # tabellen/berekeningen
+numpy==2.0.2            # rekenwerk (via pandas)
+feedparser==6.0.12      # nieuws via RSS
+requests==2.32.5        # Telegram-meldingen
+anthropic==0.113.0      # Claude-AI (optioneel; alleen met API-sleutel)

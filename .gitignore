@@ -1,7 +1,23 @@
 node_modules/
 dist/
+dist-single/
 .env
 .env.local
 *.log
 .DS_Store
-dist-single/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db
+
+# Bot-gegevens en backend-database: nooit committen
+portfolio_state.json
+baseline.json
+equity_history.jsonl
+news_log.txt
+report_log.txt
+retune_report.txt
+retune_nominations.json

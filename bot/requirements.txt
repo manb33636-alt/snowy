@@ -1,0 +1,12 @@
+# Alles wat de bot nodig heeft. Installeren met:
+#   pip install -r requirements.txt
+# (Nodig om de bot ergens anders te draaien dan op deze Mac, bv. online.)
+
+ccxt==4.5.62            # koersdata van de beurs
+pandas==2.3.3           # tabellen/berekeningen
+numpy==2.0.2            # rekenwerk (via pandas)
+feedparser==6.0.12      # nieuws via RSS
+requests==2.32.5        # Telegram-meldingen
+anthropic==0.113.0      # Claude-AI (optioneel; alleen met API-sleutel)
+scikit-learn==1.6.1     # ML-voorspeller (predict.py)
+matplotlib==3.9.4       # grafieken (plot.py, optimize.py)

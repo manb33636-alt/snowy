@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snowy Tracks — Trading Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1420; --bg2:#14263a; --panel:#131F2E; --panel2:#0E1A28;
+    --frost:#8ECAE6; --frostdim:rgba(142,202,230,0.15); --frostline:rgba(142,202,230,0.12);
+    --text:#F4F8FB; --sub:#7C93AC; --sub2:#5A7391;
+    --mint:#63D2A4; --ember:#E8846B; --amber:#E7C46B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+    min-height:100vh;-webkit-font-smoothing:antialiased;overflow:hidden}
+  .brand{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.02em}
+  .mono{font-family:'JetBrains Mono',monospace}
+  a{color:var(--frost)}
+  button{font-family:inherit}
+  /* sneeuw */
+  .flakes{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .flake{position:absolute;top:-20px;color:rgba(228,242,255,.45);animation:fall linear infinite}
+  @keyframes fall{to{transform:translateY(105vh) rotate(360deg)}}
+
+  /* ---- login ---- */
+  #login{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% -10%,var(--bg2) 0%,var(--bg) 55%),var(--bg);padding:24px}
+  .card{background:rgba(19,31,46,.8);border:1px solid rgba(142,202,230,.18);border-radius:18px;
+    padding:38px 32px;max-width:380px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5);backdrop-filter:blur(6px)}
+  .lbrand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:8px;font-size:22px}
+  .lsub{text-align:center;color:var(--sub);font-size:13px;margin-bottom:26px}
+  input[type=password],input[type=text],input[type=number]{width:100%;background:#0d1826;border:1px solid var(--frostdim);border-radius:11px;
+    color:var(--text);padding:11px 13px;font-size:14px;font-family:inherit;outline:none}
+  input[type=password]:focus,input[type=text]:focus,input[type=number]:focus{border-color:var(--frost)}
+  .btn{width:100%;margin-top:12px;background:var(--frost);color:#08131e;border:none;border-radius:11px;
+    padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+  .btn:hover{filter:brightness(1.06)}
+  .err{color:var(--ember);font-size:13px;margin-top:12px;text-align:center;min-height:18px}
+
+  /* ---- desktop / window manager ---- */
+  #desktopRoot{position:fixed;inset:0}
+  .desktop-wrap{display:flex;flex-direction:column;height:100vh;background:var(--bg)}
+  .desktop-surface{position:relative;flex:1;overflow:hidden;
+    background:radial-gradient(ellipse at 50% -10%,#14263a 0%,#0b1420 60%),#0b1420}
+  .desk-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub2);font-size:13px}
+
+  .os-window{position:absolute;display:flex;flex-direction:column;background:var(--panel);
+    border:1px solid rgba(142,202,230,0.15);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,0.45);
+    overflow:hidden;min-width:320px;min-height:220px}
+  .os-titlebar{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--panel2);
+    border-bottom:1px solid rgba(142,202,230,0.1);cursor:move;user-select:none;flex-shrink:0}
+  .os-title{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--text)}
+  .os-close{background:none;border:none;color:var(--sub);cursor:pointer;padding:4px;border-radius:6px;
+    display:flex;font-size:14px;line-height:1}
+  .os-close:hover{background:rgba(232,132,107,0.15);color:var(--ember)}
+  .os-body{flex:1;overflow:auto;padding:16px 18px}
+  .os-resize-handle{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;
+    background:linear-gradient(135deg,transparent 50%,rgba(142,202,230,0.35) 50%)}
+  .mode-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;color:var(--badge,var(--frost));
+    border:1px solid var(--badge,var(--frost));padding:2px 7px;border-radius:20px;font-weight:600}
+
+  .taskbar{display:flex;align-items:center;gap:14px;padding:9px 16px;background:var(--panel2);
+    border-top:1px solid rgba(142,202,230,0.12);flex-shrink:0;position:relative;z-index:1}
+  .taskbar-brand{display:flex;align-items:center;gap:7px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px}
+  .taskbar-apps{display:flex;gap:6px;flex:1;overflow-x:auto}
+  .taskbar-btn{display:flex;align-items:center;gap:7px;background:none;border:1px solid transparent;color:var(--sub);
+    padding:7px 11px;border-radius:9px;font-size:12px;cursor:pointer;white-space:nowrap}
+  .taskbar-btn:hover{background:rgba(142,202,230,0.08);color:var(--text)}
+  .taskbar-btn.open{border-color:rgba(142,202,230,0.35);color:var(--frost)}
+  .lock-btn{display:flex;align-items:center;gap:7px;background:none;border:1px solid var(--frostdim);
+    color:var(--sub);padding:8px 12px;border-radius:9px;font-size:12px;cursor:pointer;white-space:nowrap}
+  .lock-btn:hover{border-color:var(--frost);color:var(--frost)}
+  .paper-pill{font-size:9.5px;font-weight:600;letter-spacing:.04em;color:var(--amber);
+    border:1px solid rgba(231,196,107,.4);border-radius:20px;padding:3px 9px;white-space:nowrap}
+
+  /* ---- shared content styles ---- */
+  .panel-title{font-size:11.5px;color:var(--frost);text-transform:uppercase;letter-spacing:0.08em;
+    margin:0 0 10px;font-weight:600}
+  .banner{display:flex;align-items:flex-start;gap:8px;font-size:12px;padding:10px 14px;border-radius:10px;
+    margin-bottom:14px;line-height:1.5}
+  .banner.info{background:rgba(142,202,230,0.08);border:1px solid rgba(142,202,230,0.25);color:var(--frost)}
+  .banner.warn{background:rgba(232,132,107,0.1);border:1px solid rgba(232,132,107,0.3);color:var(--ember)}
+  .banner.hb{background:rgba(231,196,107,0.1);border:1px solid rgba(231,196,107,0.35);color:var(--amber)}
+  .empty-note{color:var(--sub2);font-size:12px;padding:10px 0}
+
+  /* explorer */
+  .explorer-search{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--frostdim);
+    border-radius:10px;padding:10px 13px;margin-bottom:12px}
+  .explorer-search input{border:none;background:none;padding:0;flex:1}
+  .explorer-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:12px;color:var(--sub);font-size:12.5px}
+  .crumb{background:none;border:none;color:var(--frost);font-size:12.5px;cursor:pointer;font-weight:600;padding:0}
+  .crumb.current{color:var(--sub);font-weight:400;cursor:default}
+  .folder-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .folder-card{display:flex;flex-direction:column;align-items:flex-start;gap:5px;background:var(--panel2);
+    border:1px solid var(--frostline);border-radius:12px;padding:15px 14px;cursor:pointer;text-align:left}
+  .folder-card:hover{border-color:var(--frost)}
+  .folder-icon{font-size:22px}
+  .folder-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px}
+  .folder-count{font-size:11px;color:var(--sub2)}
+  .asset-list{display:flex;flex-direction:column;gap:5px;max-height:420px;overflow:auto}
+  .asset-row{width:100%;display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid transparent;
+    border-radius:10px;padding:10px 13px;cursor:pointer;text-align:left}
+  .asset-row:hover{border-color:rgba(142,202,230,0.25)}
+  .asset-id{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+  .asset-symbol{font-weight:600;font-size:12.5px;flex-shrink:0}
+  .asset-name{font-size:11px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .asset-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+
+  /* stat cards */
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .stat-card{background:var(--panel2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:5px}
+  .stat-label{font-size:10.5px;color:var(--sub2);text-transform:uppercase;letter-spacing:.05em}
+  .stat-value{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600}
+  .stat-sub{font-size:11px;color:var(--sub)}
+  .pos{color:var(--mint)} .neg{color:var(--ember)} .flat{color:var(--sub)}
+
+  .tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+  .tag-buy{background:rgba(99,210,164,0.15);color:var(--mint)}
+  .tag-sell{background:rgba(232,132,107,0.15);color:var(--ember)}
+  .tag-hold{background:rgba(142,202,230,0.15);color:var(--frost)}
+
+  .row-list{display:flex;flex-direction:column;gap:5px}
+  .holding-row,.tx-row{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);
+    border-radius:8px;padding:9px 12px;font-size:12px;gap:8px}
+  .tx-row{display:grid;grid-template-columns:84px 50px 55px 1fr 46px 80px 90px;align-items:center;gap:6px}
+  .tx-row.head{background:none;color:var(--sub2);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;padding:2px 12px}
+
+  .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .filter-chip{background:var(--panel2);border:1px solid var(--frostline);color:var(--sub);
+    padding:6px 12px;border-radius:20px;font-size:11.5px;cursor:pointer}
+  .filter-chip.active{border-color:var(--frost);color:var(--frost);background:rgba(142,202,230,0.08)}
+
+  .alloc-bar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin-bottom:10px}
+  .alloc-seg{height:100%}
+  .alloc-legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--sub)}
+  .alloc-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+
+  .daily-bars{display:flex;align-items:flex-end;gap:4px;height:70px;margin-bottom:8px}
+  .daily-bar{flex:1;border-radius:3px 3px 0 0;min-height:2px}
+
+  .success-ring-row{display:flex;align-items:center;gap:14px}
+  .success-ring{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:conic-gradient(var(--mint) calc(var(--pct)*1%), #1B2A3B 0);flex-shrink:0}
+  .success-ring span{background:var(--panel);width:44px;height:44px;border-radius:50%;display:flex;
+    align-items:center;justify-content:center;font-size:12px;font-family:'JetBrains Mono',monospace}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .panel-box{background:var(--panel2);border:1px solid var(--frostline);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:rgba(142,202,230,0.2);border-radius:8px}
+</style>
+</head>
+<body>
+<div class="flakes" id="flakes"></div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <div class="card">
+    <div class="lbrand"><span>❄️</span><span class="brand">Snowy Tracks</span></div>
+    <div class="lsub">Dashboard van je trading bot · paper trading</div>
+    <form id="loginForm">
+      <input type="password" id="pw" placeholder="Wachtwoord" autocomplete="off" autofocus>
+      <button class="btn" type="submit">Ontgrendelen</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== DESKTOP ===== -->
+<div id="desktopRoot" style="display:none">
+  <div class="desktop-wrap">
+    <div class="desktop-surface" id="desktopSurface"></div>
+    <div class="taskbar" id="taskbar"></div>
+  </div>
+</div>
+
+<script>
+/* ================= sneeuw ================= */
+(function(){
+  const box=document.getElementById('flakes');
+  const marks=['❄','❅','•','·'];
+  for(let i=0;i<22;i++){
+    const f=document.createElement('div');
+    f.className='flake'; f.textContent=marks[i%marks.length];
+    f.style.left=Math.random()*100+'%';
+    f.style.fontSize=(7+Math.random()*13)+'px';
+    f.style.animationDuration=(6+Math.random()*10)+'s';
+    f.style.animationDelay=(-Math.random()*12)+'s';
+    box.appendChild(f);
+  }
+})();
+
+/* ================= login ================= */
+const PW="sneeuw123";
+document.getElementById('loginForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const v=document.getElementById('pw').value;
+  if(v===PW){
+    document.getElementById('login').style.display='none';
+    document.getElementById('desktopRoot').style.display='block';
+    initDesktop();
+  }else{
+    document.getElementById('loginErr').textContent='Onjuist wachtwoord. Probeer opnieuw.';
+    document.getElementById('pw').value='';
+  }
+});
+
+/* ================= helpers ================= */
+const fmt=n=>n==null?'—':n.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+const money=n=>n==null?'—':n.toLocaleString('nl-NL',{minimumFractionDigits:0,maximumFractionDigits:0})+' USDT';
+const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(1)+'%';
+const clsFor=n=>n==null?'flat':n>0?'pos':n<0?'neg':'flat';
+const priceFmt=n=>{if(n==null)return'—';return n<1?n.toLocaleString('nl-NL',{minimumFractionDigits:4,maximumFractionDigits:6}):n.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MARKET_TYPE_LABEL={ 'large-cap':'Large-cap', 'smart-contract':'Smart-contract platform', 'betaling':'Betaalmunt', 'meme':'Meme-munt' };
+const TAG_LABEL={ 'TECH':'Technisch signaal (MA/MACD/RSI)', 'NEWS':'Nieuws-sentiment', 'TECH+NEWS':'Technisch + nieuws bevestigd', 'RISK':'Risicobeheer (stop-loss/take-profit/trailing)', 'NEWS-EXIT':'Snelle nieuws-uitstap' };
+
+/* ================= state ================= */
+let botState=null;
+let windows=[];
+let zCounter=1;
+let explorerUI={folder:null, query:''};
+let portfolioUI={filter:'alles'};
+let backtestUI={symbol:null, period:'3m', loading:false, error:null, result:null};
+
+const CATEGORY_FOLDERS=[
+  {key:'crypto', label:'Crypto', real:true},
+  {key:'stocks', label:'Stocks', real:false},
+  {key:'etfs', label:"ETF's", real:false},
+  {key:'forex', label:'Forex', real:false},
+  {key:'commodities', label:'Commodities', real:false},
+  {key:'indices', label:'Indices', real:false},
+];
+
+const APPS=[
+  {key:'explorer', label:'Markt Explorer', icon:'🧭', mode:'analyse', badgeColor:'var(--mint)', w:740, h:600},
+  {key:'testing',  label:'Posities (live bot)', icon:'🧪', mode:'testing', badgeColor:'var(--frost)', w:760, h:600},
+  {key:'backtest', label:'Backtest', icon:'📉', mode:null, w:760, h:640},
+  {key:'evaluatie',label:'Evaluatie', icon:'📊', mode:'live', badgeColor:'var(--ember)', w:640, h:560},
+  {key:'nieuws',   label:'Nieuws', icon:'📰', mode:null, w:520, h:560},
+  {key:'portfolio',label:'Portfolio', icon:'💼', mode:null, w:920, h:680},
+];
+
+/* ================= boot ================= */
+function initDesktop(){
+  openApp('explorer');
+  load();
+  setInterval(load,30000);
+  document.getElementById('desktopSurface').addEventListener('click', handleDelegatedClick);
+  document.getElementById('desktopSurface').addEventListener('input', handleDelegatedInput);
+  document.getElementById('desktopSurface').addEventListener('change', handleDelegatedChange);
+  document.getElementById('taskbar').addEventListener('click', handleTaskbarClick);
+}
+
+function load(){
+  fetch('/api/state').then(r=>r.json()).then(s=>{ botState=s; renderWindows(); }).catch(err=>{
+    botState = botState || {error:true};
+    renderWindows();
+  });
+}
+
+/* ================= window management ================= */
+function openApp(key){
+  const existing=windows.find(w=>w.key===key);
+  if(existing){ existing.z=++zCounter; }
+  else{
+    const app=APPS.find(a=>a.key===key);
+    const offset=(windows.length*24)%160;
+    windows.push({key, x:50+offset, y:30+offset, w:app.w, h:app.h, z:++zCounter});
+  }
+  renderWindows();
+}
+function openAsset(symbol){
+  const key='asset:'+symbol;
+  const existing=windows.find(w=>w.key===key);
+  if(existing){ existing.z=++zCounter; }
+  else{
+    const offset=(windows.length*20)%180;
+    windows.push({key, type:'asset', assetSymbol:symbol, x:80+offset, y:50+offset, w:480, h:560, z:++zCounter});
+  }
+  renderWindows();
+}
+function closeWindowKey(key){ windows=windows.filter(w=>w.key!==key); renderWindows(); }
+function clampWin(win, boundW, boundH){
+  const minVisible=60;
+  win.x=Math.min(Math.max(win.x, -(win.w-minVisible)), Math.max(0, boundW-minVisible));
+  win.y=Math.min(Math.max(win.y, 0), Math.max(0, boundH-32));
+}
+
+function renderWindows(){
+  const surface=document.getElementById('desktopSurface');
+  try{
+    if(windows.length===0){
+      surface.innerHTML='<div class="desk-empty">Alle vensters gesloten. Open er een via de taakbalk hieronder.</div>';
+      renderTaskbar();
+      return;
+    }
+    surface.innerHTML=windows.map(w=>windowHtml(w)).join('');
+    windows.forEach(w=>{
+      const el=surface.querySelector(`.os-window[data-key="${cssEscape(w.key)}"]`);
+      if(!el) return;
+      wireWindow(el, w);
+    });
+    renderTaskbar();
+  }catch(err){
+    console.error('Kon het bureaublad niet tekenen:', err);
+    surface.innerHTML=`<div class="banner warn" style="margin:16px">Er ging iets mis bij het tekenen van het bureaublad: <span class="mono">${esc(err.message)}</span>. Herlaad de pagina; meld het als het blijft gebeuren.</div>`;
+  }
+}
+
+function cssEscape(s){ return String(s).replace(/[^a-zA-Z0-9_-]/g, m=>'\\'+m); }
+
+function windowHtml(win){
+  const isAsset=win.type==='asset';
+  const app=isAsset?null:APPS.find(a=>a.key===win.key);
+  const coin=isAsset && botState && botState.coins ? botState.coins.find(c=>c.symbol===win.assetSymbol) : null;
+  const icon=isAsset?'🪙':app.icon;
+  const title=isAsset?(coin?`${coin.short} — ${coin.name}`:win.assetSymbol):app.label;
+  const badge=(!isAsset && app.mode)?`<span class="mode-badge" style="--badge:${app.badgeColor||'var(--frost)'}">${app.mode}</span>`:'';
+  return `<div class="os-window" data-key="${esc(win.key)}" style="left:${win.x}px;top:${win.y}px;width:${win.w}px;height:${win.h}px;z-index:${win.z}">
+    <div class="os-titlebar" data-drag-handle>
+      <div class="os-title"><span>${icon}</span><span>${esc(title)}</span>${badge}</div>
+      <button class="os-close" data-action="close-window" data-key="${esc(win.key)}">✕</button>
+    </div>
+    <div class="os-body">${contentForWindow(win)}</div>
+    <div class="os-resize-handle" data-resize-handle></div>
+  </div>`;
+}
+
+function wireWindow(el, win){
+  el.addEventListener('mousedown', ()=>bringToFront(win, el));
+  const handle=el.querySelector('[data-drag-handle]');
+  handle.addEventListener('mousedown', e=>{
+    if(e.target.closest('.os-close')) return;
+    bringToFront(win, el);
+    const startX=e.clientX, startY=e.clientY, origX=win.x, origY=win.y;
+    const surface=document.getElementById('desktopSurface');
+    const boundW=surface.clientWidth, boundH=surface.clientHeight;
+    const minVisible=60;
+    function onMove(ev){
+      let nx=origX+(ev.clientX-startX), ny=origY+(ev.clientY-startY);
+      nx=Math.min(Math.max(nx, -(win.w-minVisible)), boundW-minVisible);
+      ny=Math.min(Math.max(ny, 0), boundH-32);
+      win.x=nx; win.y=ny; el.style.left=nx+'px'; el.style.top=ny+'px';
+    }
+    function onUp(){ window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); }
+    window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+  });
+  const resizeHandle=el.querySelector('[data-resize-handle]');
+  resizeHandle.addEventListener('mousedown', e=>{
+    e.stopPropagation(); bringToFront(win, el);
+    const startX=e.clientX, startY=e.clientY, origW=win.w, origH=win.h;
+    function onMove(ev){
+      win.w=Math.max(340, origW+(ev.clientX-startX));
+      win.h=Math.max(220, origH+(ev.clientY-startY));
+      el.style.width=win.w+'px'; el.style.height=win.h+'px';
+    }
+    function onUp(){ window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); }
+    window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+  });
+}
+function bringToFront(win, el){ win.z=++zCounter; el.style.zIndex=win.z; }
+
+function renderTaskbar(){
+  const bar=document.getElementById('taskbar');
+  bar.innerHTML=`
+    <div class="taskbar-brand"><span>❄️</span><span>Snowy Tracks</span></div>
+    <span class="paper-pill">● PAPER TRADING — NEPGELD</span>
+    <div class="taskbar-apps">
+      ${APPS.map(a=>`<button class="taskbar-btn ${windows.some(w=>w.key===a.key)?'open':''}" data-action="open-app" data-key="${a.key}">
+        <span>${a.icon}</span><span>${a.label}</span></button>`).join('')}
+    </div>
+    <button class="lock-btn" data-action="lock">🔒 Vergrendel</button>`;
+}
+
+/* ================= delegated events ================= */
+function handleDelegatedClick(e){
+  const t=e.target.closest('[data-action]');
+  if(!t) return;
+  const action=t.getAttribute('data-action');
+  if(action==='close-window'){ closeWindowKey(t.getAttribute('data-key')); }
+  else if(action==='open-folder'){ explorerUI.folder=t.getAttribute('data-folder'); explorerUI.query=''; renderWindows(); }
+  else if(action==='open-market-root'){ explorerUI.folder=null; renderWindows(); }
+  else if(action==='open-asset'){ openAsset(t.getAttribute('data-symbol')); }
+  else if(action==='set-filter'){ portfolioUI.filter=t.getAttribute('data-filter'); renderWindows(); }
+  else if(action==='clear-search'){ explorerUI.query=''; renderWindows(); }
+  else if(action==='bt-set-period'){ backtestUI.period=t.getAttribute('data-period'); renderWindows(); }
+  else if(action==='bt-run'){ runBacktest(); }
+}
+function handleDelegatedChange(e){
+  if(e.target.matches('[data-role="bt-symbol"]')){ backtestUI.symbol=e.target.value; }
+}
+function handleDelegatedInput(e){
+  if(e.target.matches('[data-role="explorer-search"]')){ explorerUI.query=e.target.value; renderWindows(); refocusExplorerSearch(); }
+}
+function refocusExplorerSearch(){
+  const el=document.querySelector('[data-role="explorer-search"]');
+  if(el){ el.focus(); const v=el.value; el.value=''; el.value=v; }
+}
+function handleTaskbarClick(e){
+  const t=e.target.closest('[data-action]');
+  if(!t) return;
+  const action=t.getAttribute('data-action');
+  if(action==='open-app') openApp(t.getAttribute('data-key'));
+  else if(action==='lock') location.reload();
+}
+
+/* ================= content: shared loading/error ================= */
+function loadingOrError(){
+  if(!botState) return '<div class="empty-note">Bot-stand laden…</div>';
+  if(botState.error) return '<div class="banner warn">Kon de bot-stand niet laden. Draait de bot? Start \'m met <span class="mono">./bot.sh start</span> en herlaad deze pagina.</div>';
+  return null;
+}
+
+/* ================= content router ================= */
+function contentForWindow(win){
+  const loadErr=loadingOrError();
+  if(loadErr) return loadErr;
+  try{
+    if(win.type==='asset') return renderAssetDetail(win.assetSymbol);
+    if(win.key==='explorer') return renderExplorer();
+    if(win.key==='testing') return renderTesting();
+    if(win.key==='evaluatie') return renderEvaluatie();
+    if(win.key==='nieuws') return renderNews();
+    if(win.key==='backtest') return renderBacktest();
+    if(win.key==='portfolio') return renderPortfolio();
+    return '';
+  }catch(err){
+    console.error('Render-fout in venster', win.key, err);
+    return `<div class="banner warn">Dit venster kon niet getekend worden door een onverwachte fout: <span class="mono">${esc(err.message)}</span>. De rest van het dashboard blijft gewoon werken — herlaad de pagina, en meld dit als het blijft gebeuren.</div>`;
+  }
+}
+
+/* ================= nieuws ================= */
+function renderNews(){
+  const items=botState.news||[];
+  let html='';
+  if(botState.sentiment!=null){
+    html+=`<div class="stat-row"><div class="stat-card"><span class="stat-label">Actueel sentiment</span>
+      <span class="stat-value ${clsFor(botState.sentiment)}">${botState.sentiment>0?'+':''}${botState.sentiment.toFixed(2)}</span></div></div>`;
+  }
+  if(items.length===0){
+    html+='<div class="empty-note">Nog geen nieuwsmetingen gelogd (news_log.txt is leeg of de bot heeft nog geen nieuwsronde gedraaid).</div>';
+    return html;
+  }
+  html+=`<div class="panel-title">Laatste nieuwsmetingen</div><div class="row-list">`;
+  items.forEach(it=>{
+    html+=`<div class="panel-box" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span class="mono" style="font-size:11px;color:var(--sub2)">${esc(it.time)}</span>
+        <span class="${clsFor(it.sentiment)}">sentiment ${it.sentiment>0?'+':''}${it.sentiment.toFixed(2)}${it.confidence!=null?' · '+it.confidence+'% vertrouwen':''}</span>
+      </div>
+      ${it.headlines.length?`<ul style="margin:0;padding-left:16px;font-size:12px;color:var(--sub);line-height:1.7">
+        ${it.headlines.map(h=>`<li>${esc(h)}</li>`).join('')}</ul>`:'<div class="empty-note" style="padding:0">Geen koppen bewaard bij deze meting.</div>'}
+    </div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+/* ================= Market Explorer ================= */
+function renderExplorer(){
+  const coins=botState.coins||[];
+  let html='';
+
+  html+=`<div class="explorer-search">
+    <span>🔎</span>
+    <input type="text" data-role="explorer-search" value="${esc(explorerUI.query)}"
+      placeholder="Zoek op naam of ticker… (bv. BTC, Bitcoin, ETH)">
+    ${explorerUI.query?`<button class="os-close" data-action="clear-search">✕</button>`:''}
+  </div>`;
+
+  const searching=explorerUI.query.trim().length>0;
+  if(searching){
+    const q=explorerUI.query.trim().toLowerCase();
+    const results=coins.filter(c=>c.short.toLowerCase().includes(q) || c.name.toLowerCase().includes(q));
+    html+=`<div class="explorer-breadcrumb"><span class="crumb current">Zoekresultaten voor "${esc(explorerUI.query)}" (${results.length})</span></div>`;
+    html+=assetListHtml(results);
+    return html;
+  }
+
+  if(!explorerUI.folder){
+    html+=`<div class="explorer-breadcrumb"><button class="crumb" data-action="open-market-root">📁 Market Explorer</button></div>`;
+    html+=`<div class="folder-grid">${CATEGORY_FOLDERS.map(f=>`
+      <button class="folder-card" data-action="open-folder" data-folder="${f.key}">
+        <span class="folder-icon">📁</span>
+        <span class="folder-label">${f.label}</span>
+        <span class="folder-count">${f.real?coins.length+' actief':'nog niet actief'}</span>
+      </button>`).join('')}</div>`;
+    return html;
+  }
+
+  const folder=CATEGORY_FOLDERS.find(f=>f.key===explorerUI.folder);
+  html+=`<div class="explorer-breadcrumb">
+    <button class="crumb" data-action="open-market-root">📁 Market Explorer</button>
+    <span>›</span><span class="crumb current">${folder.label}</span>
+  </div>`;
+  if(!folder.real){
+    html+=`<div class="empty-note">Deze bot handelt hier nog niet in — alleen crypto is momenteel actief (${coins.length} munten).</div>`;
+  }else{
+    html+=assetListHtml(coins);
+  }
+  return html;
+}
+
+function assetListHtml(list){
+  if(list.length===0) return '<div class="empty-note">Geen resultaten gevonden.</div>';
+  return `<div class="asset-list">${list.map(c=>`
+    <button class="asset-row" data-action="open-asset" data-symbol="${esc(c.symbol)}">
+      <div class="asset-id">
+        <span class="asset-symbol">${esc(c.short)}</span>
+        <span class="asset-name">${esc(c.name)}</span>
+      </div>
+      <div class="asset-right">
+        <span class="mono">${priceFmt(c.price)}</span>
+        <span class="${clsFor(c.pnl_pct)}">${pct(c.pnl_pct)}</span>
+      </div>
+      <span>›</span>
+    </button>`).join('')}</div>`;
+}
+
+/* ================= asset detail ================= */
+function renderAssetDetail(symbol){
+  const coin=(botState.coins||[]).find(c=>c.symbol===symbol);
+  if(!coin) return '<div class="empty-note">Munt niet gevonden.</div>';
+  const trades=(botState.trades||[]).filter(t=>t.symbol===coin.short);
+  let html=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div class="brand" style="font-size:18px">${esc(coin.short)} <span style="font-size:11px;color:var(--sub2);font-weight:400">${esc(MARKET_TYPE_LABEL[coin.market_type]||coin.market_type)}</span></div>
+        <div style="color:var(--sub);font-size:12px">${esc(coin.name)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="mono" style="font-size:18px">${priceFmt(coin.price)}</div>
+        <div class="${clsFor(coin.pnl_pct)}">${pct(coin.pnl_pct)}</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><span class="stat-label">Waarde</span><span class="stat-value">${money(coin.value)}</span></div>
+      <div class="stat-card"><span class="stat-label">Status</span><span class="stat-value">${coin.in_position?'🟢 In positie':'⚪ Aan de zijlijn'}</span></div>
+      <div class="stat-card"><span class="stat-label">Transacties</span><span class="stat-value">${coin.n_trades}</span></div>
+    </div>
+    <div class="panel-title" style="margin-top:6px">Laatste transacties voor ${esc(coin.short)}</div>`;
+  if(trades.length===0){
+    html+='<div class="empty-note">Nog geen transacties gelogd voor deze munt.</div>';
+  }else{
+    html+=`<div class="row-list">${trades.slice(0,15).map(t=>`
+      <div class="holding-row">
+        <div>
+          <div>${t.action==='BUY'?'🟢 Koop':'🔴 Verkoop ('+esc(t.action)+')'} · ${esc(t.tag||'')}</div>
+          <div style="color:var(--sub2);font-size:10.5px">${esc(t.time)}</div>
+        </div>
+        <div class="mono">${priceFmt(t.price)}</div>
+      </div>`).join('')}</div>`;
+  }
+  html+=`<div class="banner info" style="margin-top:12px">Dit venster toont alleen de echte, gelogde stand — de bot handelt zelf autonoom; er wordt hier niets uitgevoerd.</div>`;
+  return html;
+}
+
+/* ================= testing / posities ================= */
+function renderTesting(){
+  const coins=botState.coins||[];
+  const ev=botState.evaluation||{};
+  const triggers=botState.triggers||{};
+  let html=`<div class="banner info">🧪 Dit venster heet "Testing" omdat dit precies is wat de bot 24/7 doet: strategieën uittesten met nepgeld. Er zitten hier bewust geen koop/verkoop-knoppen — de bot handelt zelf autonoom op de achtergrond, ook als deze pagina dicht staat. Dit venster laat gewoon zien wat hij nu heeft gedaan.</div>`;
+
+  html+=`<div class="panel-title">Posities per munt</div><div class="row-list" style="margin-bottom:16px">`;
+  if(coins.length===0){ html+='<div class="empty-note">Nog geen data van de bot.</div>'; }
+  coins.forEach(c=>{
+    html+=`<div class="holding-row">
+      <div>
+        <div>${esc(c.short)} <span style="color:var(--sub2);font-weight:400">· ${esc(c.name)}</span></div>
+        <div style="color:var(--sub2);font-size:10.5px">${c.in_position?'🟢 in positie':'⚪ aan de zijlijn'} · ${c.n_trades} transacties</div>
+      </div>
+      <div style="text-align:right">
+        <div class="mono">${money(c.value)}</div>
+        <div class="${clsFor(c.pnl_pct)}">${pct(c.pnl_pct)}</div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="panel-title">Succespercentage (winrate)</div>
+    <div class="success-ring-row" style="margin-bottom:16px">
+      <div class="success-ring" style="--pct:${ev.win_rate??0}"><span>${ev.win_rate==null?'–':ev.win_rate+'%'}</span></div>
+      <div style="font-size:11.5px;color:var(--sub)">${ev.n_round||0} afgeronde trades · ${ev.n_events||0} onafhankelijke instapmomenten · gem. ${ev.mean_net==null?'—':pct(ev.mean_net)} per trade na kosten.</div>
+    </div>`;
+
+  const tagKeys=Object.keys(triggers);
+  if(tagKeys.length){
+    html+=`<div class="panel-title">Resultaat per signaaltype</div><div class="row-list">`;
+    tagKeys.forEach(tag=>{
+      const v=triggers[tag];
+      html+=`<div class="holding-row">
+        <div>
+          <div>${esc(TAG_LABEL[tag]||tag)}</div>
+          <div style="color:var(--sub2);font-size:10.5px">${v.n} keer · win ${v.win}%</div>
+        </div>
+        <div class="${clsFor(v.mean)}">${pct(v.mean)}</div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  return html;
+}
+
+/* ================= evaluatie ================= */
+function renderEvaluatie(){
+  const o=botState.overview||{}, e=botState.evaluation||{};
+  let html=`<div class="banner info">Dit is geen "live handelen met echt geld"-schakelaar. Deze bot handelt uitsluitend met nepgeld, altijd — dat is een harde regel van het project. Dit venster laat alleen zien of de strategie ooit gòed genoeg zou zijn om serieus te overwegen.</div>`;
+  if(botState.heartbeat){
+    html+=`<div class="banner hb">${esc(botState.heartbeat)}</div>`;
+  }
+  html+=`<div class="stat-row">
+    <div class="stat-card"><span class="stat-label">Totale waarde</span><span class="stat-value">${money(o.total_value)}</span><span class="stat-sub">start ${money(o.total_start)}</span></div>
+    <div class="stat-card"><span class="stat-label">Winst/verlies</span><span class="stat-value ${clsFor(o.pnl_pct)}">${pct(o.pnl_pct)}</span><span class="stat-sub">${o.pnl>=0?'+':''}${fmt(o.pnl)} USDT</span></div>
+    <div class="stat-card"><span class="stat-label">In de markt</span><span class="stat-value">${o.in_market}/${o.max_positions}</span><span class="stat-sub">van ${o.n_coins} munten</span></div>`;
+  if(o.margin!=null) html+=`<div class="stat-card"><span class="stat-label">Bot vs markt</span><span class="stat-value ${clsFor(o.margin)}">${pct(o.margin)}</span><span class="stat-sub">bot ${pct(o.bot_since)} · markt ${pct(o.market_since)}</span></div>`;
+  if(o.btc_hold!=null) html+=`<div class="stat-card"><span class="stat-label">vs BTC vasthouden</span><span class="stat-value ${clsFor(o.pnl_pct-o.btc_hold)}">${pct(o.pnl_pct-o.btc_hold)}</span><span class="stat-sub">BTC-hold ${pct(o.btc_hold)}</span></div>`;
+  if(e.drawdown!=null) html+=`<div class="stat-card"><span class="stat-label">Grootste dip</span><span class="stat-value">${e.drawdown.toFixed(1)}%</span></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="panel-box">
+    <div class="panel-title">Kan de bot voor het echt?</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span class="tag ${e.verdict&&e.verdict.includes('GROEN')?'tag-buy':e.verdict&&e.verdict.includes('NIET')?'tag-sell':'tag-hold'}">${esc(e.verdict||'—')}</span>
+      <span style="font-size:12px;color:var(--sub)">${esc(e.detail||'')}</span>
+    </div>
+    <div style="margin-top:10px;font-size:11.5px;color:var(--sub2)">
+      ${e.n_round||0} afgeronde trades · ${e.n_events||0} onafhankelijke instapmomenten · win ${e.win_rate==null?'—':e.win_rate+'%'}
+    </div>
+  </div>`;
+
+  if(botState.sentiment!=null){
+    html+=`<div class="panel-box"><div class="panel-title">Nieuws-sentiment (algemeen)</div>
+      <div class="${clsFor(botState.sentiment)}" style="font-size:16px" class="mono">${botState.sentiment>0?'+':''}${botState.sentiment.toFixed(2)}</div></div>`;
+  }
+  return html;
+}
+
+/* ================= backtest ================= */
+function runBacktest(){
+  const coins=(botState&&botState.coins)||[];
+  const symbol=backtestUI.symbol || (coins[0] && coins[0].symbol);
+  if(!symbol) return;
+  backtestUI.symbol=symbol;
+  backtestUI.loading=true; backtestUI.error=null; backtestUI.result=null;
+  renderWindows();
+  fetch(`/api/backtest?symbol=${encodeURIComponent(symbol)}&period=${encodeURIComponent(backtestUI.period)}`)
+    .then(r=>r.json())
+    .then(d=>{
+      backtestUI.loading=false;
+      if(d.error){ backtestUI.error=d.error; } else { backtestUI.result=d; }
+      renderWindows();
+    })
+    .catch(err=>{
+      backtestUI.loading=false;
+      backtestUI.error='Kon geen verbinding maken met de server: '+err.message;
+      renderWindows();
+    });
+}
+
+function renderBacktest(){
+  const coins=(botState.coins||[]);
+  if(!backtestUI.symbol && coins[0]) backtestUI.symbol=coins[0].symbol;
+  const periods=[['1m','1 Maand'],['3m','3 Maanden'],['1y','1 Jaar'],['5y','5 Jaar']];
+
+  let html=`<div class="banner info">Test de échte strategie (dezelfde code als de live bot) op échte historische koersen van de beurs. Geen nepdata — als het ophalen mislukt, zie je gewoon een foutmelding.</div>`;
+
+  html+=`<div class="panel-box">
+    <div class="panel-title">Instellingen</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+      <select data-role="bt-symbol" style="background:var(--panel2);color:var(--text);border:1px solid var(--frostline);border-radius:8px;padding:8px 10px;font-size:12.5px">
+        ${coins.map(c=>`<option value="${esc(c.symbol)}" ${c.symbol===backtestUI.symbol?'selected':''}>${esc(c.short)} — ${esc(c.name)}</option>`).join('')}
+      </select>
+      <div class="filter-row" style="margin:0">
+        ${periods.map(([k,label])=>`<button class="filter-chip ${backtestUI.period===k?'active':''}" data-action="bt-set-period" data-period="${k}">${label}</button>`).join('')}
+      </div>
+    </div>
+    <button class="btn" style="width:auto;padding:9px 20px;margin:0" data-action="bt-run" ${backtestUI.loading?'disabled':''}>
+      ${backtestUI.loading?'Bezig met backtesten… (kan bij 1 jaar/5 jaar even duren)':'▶️ Start backtest'}
+    </button>
+  </div>`;
+
+  if(backtestUI.error){
+    html+=`<div class="banner warn">${esc(backtestUI.error)}</div>`;
+  }
+
+  if(backtestUI.result){
+    const r=backtestUI.result;
+    html+=`<div class="stat-row">
+      <div class="stat-card"><span class="stat-label">Resultaat bot</span><span class="stat-value ${clsFor(r.profit_pct)}">${pct(r.profit_pct)}</span>
+        <span class="stat-sub">${fmt(r.start_value)} → ${fmt(r.final_value)} USDT</span></div>
+      <div class="stat-card"><span class="stat-label">Buy &amp; hold</span><span class="stat-value ${clsFor(r.buy_hold_pct)}">${pct(r.buy_hold_pct)}</span>
+        <span class="stat-sub">gewoon vasthouden</span></div>
+      <div class="stat-card"><span class="stat-label">Verschil</span><span class="stat-value ${clsFor(r.vs_buy_hold)}">${pct(r.vs_buy_hold)}</span>
+        <span class="stat-sub">bot t.o.v. buy&amp;hold</span></div>
+      <div class="stat-card"><span class="stat-label">Grootste dip</span><span class="stat-value">${r.max_drawdown_pct}%</span></div>
+    </div>`;
+
+    html+=`<div class="panel-box"><div class="panel-title">Verloop tijdens de test</div>${svgChart(r.equity.map(p=>({date:p.time, total:p.value})))}</div>`;
+
+    html+=`<div class="stat-row">
+      <div class="stat-card"><span class="stat-label">Trades</span><span class="stat-value">${r.n_trades}</span><span class="stat-sub">${r.n_round_trips} afgerond</span></div>
+      <div class="stat-card"><span class="stat-label">Winrate</span><span class="stat-value">${r.win_rate==null?'—':r.win_rate+'%'}</span></div>
+      <div class="stat-card"><span class="stat-label">Gem. winst</span><span class="stat-value pos">${r.avg_win_pct==null?'—':pct(r.avg_win_pct)}</span></div>
+      <div class="stat-card"><span class="stat-label">Gem. verlies</span><span class="stat-value neg">${r.avg_loss_pct==null?'—':pct(r.avg_loss_pct)}</span></div>
+      <div class="stat-card"><span class="stat-label">Grootste winst</span><span class="stat-value pos">${r.biggest_win_pct==null?'—':pct(r.biggest_win_pct)}</span></div>
+      <div class="stat-card"><span class="stat-label">Grootste verlies</span><span class="stat-value neg">${r.biggest_loss_pct==null?'—':pct(r.biggest_loss_pct)}</span></div>
+      <div class="stat-card"><span class="stat-label">Profit factor</span><span class="stat-value">${r.profit_factor==null?'—':r.profit_factor}</span></div>
+    </div>
+    <div class="empty-note">Periode: ${esc(r.period_start)} t/m ${esc(r.period_end)} · ${r.n_candles} candles (${esc(r.timeframe)}) · symbool ${esc(r.symbol)}</div>`;
+
+    html+=`<div class="banner info">${r.profit_pct>r.buy_hold_pct?'De bot deed het beter dan gewoon vasthouden in deze periode.':'De bot deed het slechter dan gewoon vasthouden in deze periode.'} Eén periode zegt niet alles — test ook andere periodes en munten voor een eerlijker beeld, en vergelijk met de langetermijn-Evaluatie van de live bot.</div>`;
+  }
+
+  return html;
+}
+
+/* ================= portfolio ================= */
+function equitySlice(days){
+  const series=botState.equity||[];
+  if(days==null) return series;
+  return series.slice(Math.max(0, series.length-days));
+}
+function svgChart(series){
+  if(!series||series.length<2) return '<div class="empty-note">Nog te weinig dagen voor een grafiek.</div>';
+  const W=100,H=34,vals=series.map(d=>d.total);
+  const mn=Math.min(...vals),mx=Math.max(...vals),rng=(mx-mn)||1;
+  const x=i=>i/(series.length-1)*W;
+  const y=v=>H-2-((v-mn)/rng)*(H-4);
+  const line=series.map((d,i)=>`${x(i).toFixed(2)},${y(d.total).toFixed(2)}`).join(' ');
+  const area=`0,${H} `+line+` ${W},${H}`;
+  const up=vals[vals.length-1]>=vals[0];
+  const col=up?'var(--mint)':'var(--ember)';
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:130px">
+    <line x1="0" y1="${(H/2).toFixed(1)}" x2="${W}" y2="${(H/2).toFixed(1)}" stroke="rgba(142,202,230,.08)"/>
+    <polygon points="${area}" fill="${col}" opacity="0.10"/>
+    <polyline points="${line}" fill="none" stroke="${col}" stroke-width="0.7" stroke-linejoin="round"/>
+  </svg>
+  <div style="display:flex;justify-content:space-between;margin-top:2px;color:var(--sub2);font-size:10.5px">
+    <span>${esc(series[0].date)}</span><span>${esc(series[series.length-1].date)}</span></div>`;
+}
+
+function renderPortfolio(){
+  const o=botState.overview||{}, e=botState.evaluation||{}, coins=botState.coins||[];
+  const equity=botState.equity||[];
+  const trades=botState.trades||[];
+  const closedCount=trades.filter(t=>t.action!=='BUY').length;
+
+  let todayDelta=null, todayPct=null;
+  if(equity.length>=2){
+    todayDelta=equity[equity.length-1].total-equity[equity.length-2].total;
+    todayPct=(todayDelta/equity[equity.length-2].total)*100;
+  }
+
+  let html=`<div class="stat-row">
+    <div class="stat-card"><span class="stat-label">Portfolio waarde</span><span class="stat-value">${money(o.total_value)}</span>
+      <span class="stat-sub ${clsFor(o.pnl)}">${o.pnl>=0?'+':''}${fmt(o.pnl)} · ${pct(o.pnl_pct)}</span></div>
+    <div class="stat-card"><span class="stat-label">Vandaag</span><span class="stat-value ${clsFor(todayDelta)}">${todayDelta==null?'—':(todayDelta>=0?'+':'')+fmt(todayDelta)}</span>
+      <span class="stat-sub">${todayPct==null?'nog geen 2 dagen historie':pct(todayPct)}</span></div>
+    <div class="stat-card"><span class="stat-label">Open posities</span><span class="stat-value">${o.in_market}/${o.n_coins}</span></div>
+    <div class="stat-card"><span class="stat-label">Gesloten posities</span><span class="stat-value">${closedCount}</span></div>
+    <div class="stat-card"><span class="stat-label">Win-rate</span><span class="stat-value">${e.win_rate==null?'—':e.win_rate+'%'}</span></div>
+  </div>`;
+
+  html+=`<div class="grid-2">`;
+
+  // groeigrafiek + periode
+  html+=`<div class="panel-box">
+    <div class="panel-title">📈 Portfolio groei</div>
+    <div class="filter-row">
+      ${[['Vandaag',2],['1 Week',7],['1 Maand',30],['3 Maanden',90],['6 Maanden',180],['1 Jaar',365],['Alles',null]].map(([label,d])=>
+        `<button class="filter-chip" data-days="${d}" onclick="renderPortfolioChart(${d})">${label}</button>`).join('')}
+    </div>
+    <div id="portfolioChartHost">${svgChart(equitySlice(30))}</div>
+  </div>`;
+
+  // verdeling
+  const byType={};
+  coins.forEach(c=>{ if(c.value!=null){ byType[c.market_type]=(byType[c.market_type]||0)+c.value; } });
+  const totalTypeValue=Object.values(byType).reduce((a,b)=>a+b,0)||1;
+  const palette=['var(--frost)','var(--mint)','var(--amber)','var(--ember)','#9b8cf2'];
+  const typeKeys=Object.keys(byType);
+  html+=`<div class="panel-box">
+    <div class="panel-title">Verdeling van je portfolio</div>
+    <div class="alloc-bar">${typeKeys.map((k,i)=>`<div class="alloc-seg" style="width:${(byType[k]/totalTypeValue*100).toFixed(1)}%;background:${palette[i%palette.length]}"></div>`).join('')}</div>
+    <div class="alloc-legend">${typeKeys.map((k,i)=>`<span><span class="alloc-dot" style="background:${palette[i%palette.length]}"></span>${esc(MARKET_TYPE_LABEL[k]||k)} — ${(byType[k]/totalTypeValue*100).toFixed(0)}%</span>`).join('')}</div>
+  </div>`;
+
+  html+=`</div><div class="grid-2">`;
+
+  // winst vs verlies
+  const winners=coins.filter(c=>c.pnl_pct>0).length, losers=coins.filter(c=>c.pnl_pct<0).length, flatN=coins.filter(c=>c.pnl_pct===0).length;
+  const wSum=winners+losers||1;
+  html+=`<div class="panel-box">
+    <div class="panel-title">Winst versus verlies (munten)</div>
+    <div class="alloc-bar">
+      <div class="alloc-seg" style="width:${(winners/wSum*100).toFixed(0)}%;background:var(--mint)"></div>
+      <div class="alloc-seg" style="width:${(losers/wSum*100).toFixed(0)}%;background:var(--ember)"></div>
+    </div>
+    <div class="alloc-legend">
+      <span><span class="alloc-dot" style="background:var(--mint)"></span>🟢 Winst: ${winners}</span>
+      <span><span class="alloc-dot" style="background:var(--ember)"></span>🔴 Verlies: ${losers}</span>
+      <span>⚪ Gelijk: ${flatN}</span>
+    </div>
+  </div>`;
+
+  // dagelijkse prestaties
+  const last14=equity.slice(-14);
+  const dayChanges=last14.map((d,i)=>i===0?0:((d.total-last14[i-1].total)/last14[i-1].total*100));
+  const maxAbs=Math.max(1,...dayChanges.map(Math.abs));
+  html+=`<div class="panel-box">
+    <div class="panel-title">Dagelijkse prestaties</div>
+    <div class="daily-bars">${dayChanges.map(v=>`<div class="daily-bar" style="height:${Math.max(2,Math.abs(v)/maxAbs*60)}px;background:${v>=0?'var(--mint)':'var(--ember)'}"></div>`).join('')}</div>
+    <div class="empty-note" style="padding:0">Laatste ${dayChanges.length} dagen, dag-op-dag %.</div>
+  </div>`;
+
+  html+=`</div>`;
+
+  // dagrapport-analyse: beste/slechtste strategie, welke condities/confidence het best voorspelden
+  const a=botState.analysis||{};
+  if(a.best_strategy || a.avg_win_pct!=null){
+    html+=`<div class="grid-2">`;
+    html+=`<div class="panel-box">
+      <div class="panel-title">📈 Winst/verlies per trade</div>
+      <div class="stat-row" style="margin-bottom:0">
+        <div class="stat-card"><span class="stat-label">Gem. winst</span><span class="stat-value pos">${a.avg_win_pct!=null?'+'+a.avg_win_pct+'%':'—'}</span><span class="stat-sub">${a.n_win||0}x</span></div>
+        <div class="stat-card"><span class="stat-label">Gem. verlies</span><span class="stat-value neg">${a.avg_loss_pct!=null?a.avg_loss_pct+'%':'—'}</span><span class="stat-sub">${a.n_loss||0}x</span></div>
+      </div>
+      ${a.best_strategy?`<div class="empty-note" style="padding-top:10px">🏆 Beste strategie: <b style="color:var(--mint)">${esc(TAG_LABEL[a.best_strategy.tag]||a.best_strategy.tag)}</b> (${a.best_strategy.mean>=0?'+':''}${a.best_strategy.mean}% gem., ${a.best_strategy.n}x)</div>`:''}
+      ${a.worst_strategy && a.worst_strategy.tag!==(a.best_strategy&&a.best_strategy.tag)?`<div class="empty-note" style="padding-top:2px">🥶 Slechtste: <b style="color:var(--ember)">${esc(TAG_LABEL[a.worst_strategy.tag]||a.worst_strategy.tag)}</b> (${a.worst_strategy.mean}% gem., ${a.worst_strategy.n}x)</div>`:''}
+    </div>`;
+    const indEntries=Object.entries(a.indicator_success||{});
+    html+=`<div class="panel-box">
+      <div class="panel-title">🔍 Meest succesvolle instap-condities</div>
+      ${indEntries.length===0?'<div class="empty-note">Nog te weinig afgeronde trades met opgeslagen indicatoren voor een betrouwbaar patroon.</div>':
+        `<div class="row-list">${indEntries.slice(0,4).map(([naam,v])=>`
+        <div class="holding-row">
+          <div>${esc(naam)}<div style="color:var(--sub2);font-size:10.5px">${v.n}x · win ${v.win}%</div></div>
+          <div class="${v.mean>=0?'pos':'neg'} mono">${v.mean>=0?'+':''}${v.mean}%</div>
+        </div>`).join('')}</div>`}
+    </div>`;
+    html+=`</div>`;
+  }
+
+  // trading history
+  html+=`<div class="panel-title" style="margin-top:4px">Trading History</div>`;
+  html+=`<div class="filter-row">
+    ${['alles','crypto','stocks','etfs','forex','commodities','open','gesloten','winst','verlies'].map(f=>
+      `<button class="filter-chip ${portfolioUI.filter===f?'active':''}" data-action="set-filter" data-filter="${f}">${f[0].toUpperCase()+f.slice(1)}</button>`).join('')}
+  </div>`;
+  html+=renderTradeTable(trades, coins);
+
+  return html;
+}
+
+function renderPortfolioChart(days){
+  const host=document.getElementById('portfolioChartHost');
+  if(host) host.innerHTML=svgChart(equitySlice(days));
+}
+
+function renderTradeTable(trades, coins){
+  const f=portfolioUI.filter;
+  let list=trades;
+  if(f==='stocks'||f==='etfs'||f==='forex'||f==='commodities') return '<div class="empty-note">Deze bot handelt hier niet in — alleen crypto is actief.</div>';
+  if(f==='crypto') list=trades; // alles is al crypto
+  if(f==='open'){ const openShorts=coins.filter(c=>c.in_position).map(c=>c.short); list=list.filter(t=>openShorts.includes(t.symbol)); }
+  if(f==='gesloten'){ list=list.filter(t=>t.action!=='BUY'); }
+  if(f==='winst'){ const winShorts=coins.filter(c=>c.pnl_pct>0).map(c=>c.short); list=list.filter(t=>winShorts.includes(t.symbol)); }
+  if(f==='verlies'){ const lossShorts=coins.filter(c=>c.pnl_pct<0).map(c=>c.short); list=list.filter(t=>lossShorts.includes(t.symbol)); }
+
+  if(list.length===0) return '<div class="empty-note">Geen transacties in deze weergave.</div>';
+
+  let html=`<div class="tx-row head"><span>Datum/tijd</span><span>Munt</span><span>Actie</span><span>Reden</span><span>Conf.</span><span>Prijs</span><span>Waarde</span></div>`;
+  html+=list.slice(0,60).map(t=>`
+    <div class="tx-row">
+      <span class="mono" style="font-size:10.5px">${esc(t.time)}</span>
+      <span>${esc(t.symbol)}</span>
+      <span class="${t.action==='BUY'?'pos':'neg'}">${esc(t.action)}</span>
+      <span style="font-size:11px" title="${esc(t.reason||'')}">${esc(t.reason || TAG_LABEL[t.tag] || t.tag || '—')}</span>
+      <span class="mono" style="font-size:11px">${t.confidence!=null?t.confidence+'%':'—'}</span>
+      <span class="mono">${priceFmt(t.price)}</span>
+      <span class="mono">${money(t.value)}</span>
+    </div>`).join('');
+  html+=`<div class="empty-note">Oudere transacties (van vóór deze update) tonen geen reden/confidence — dat werd toen nog niet apart opgeslagen. Nieuwe transacties wel.</div>`;
+  return html;
+}
+</script>
+</body>
+</html>
+
