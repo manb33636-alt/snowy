@@ -21,3 +21,4 @@ news_log.txt
 report_log.txt
 retune_report.txt
 retune_nominations.json
+*.whl

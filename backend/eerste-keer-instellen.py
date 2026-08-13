@@ -93,7 +93,7 @@ def main() -> int:
         nieuwe = input("Nieuwe sleutel invullen? Enter = houden zoals het is: ").strip()
     else:
         print("Voor aandelen- en ETF-koersen heb je een gratis sleutel nodig van")
-        print("https://twelvedata.com — account maken, sleutel kopieren, hier plakken.")
+        print("https://twelvedata.com - account maken, sleutel kopieren, hier plakken.")
         print("Nog geen sleutel? Druk gewoon op Enter; je kunt dit later doen.")
         nieuwe = input("Twelve Data-sleutel: ").strip()
     if nieuwe:
