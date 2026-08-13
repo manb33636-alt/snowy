@@ -1,15 +1,23 @@
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-from passlib.context import CryptContext
+import bcrypt
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from app.config import settings
 from app.models import LoginAttempt
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 serializer = URLSafeTimedSerializer(settings.SESSION_SECRET)
 
 LOCK_MINUTES = [15, 30, 45, 60]  # escaleert, gemaximeerd op 60
+
+
+def password_bytes(plain: str) -> bytes:
+    """
+    bcrypt kijkt alleen naar de eerste 72 bytes van een wachtwoord en geeft een
+    fout bij meer. Afkappen op precies dat punt, zodat een lang wachtwoord geen
+    crash oplevert.
+    """
+    return plain.encode("utf-8")[:72]
 
 
 def verify_password(plain: str) -> bool:
@@ -18,7 +26,13 @@ def verify_password(plain: str) -> bool:
             "APP_PASSWORD_HASH is niet ingesteld in .env. "
             "Genereer er een met: python -m app.tools.hash_password"
         )
-    return pwd_context.verify(plain, settings.APP_PASSWORD_HASH)
+    try:
+        return bcrypt.checkpw(password_bytes(plain), settings.APP_PASSWORD_HASH.encode("utf-8"))
+    except ValueError as exc:
+        raise RuntimeError(
+            "APP_PASSWORD_HASH in .env is geen geldige bcrypt-hash. "
+            "Maak een nieuwe met: python -m app.tools.hash_password"
+        ) from exc
 
 
 def record_attempt(db: Session, success: bool, ip_address: str = None):

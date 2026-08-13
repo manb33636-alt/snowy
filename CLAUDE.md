@@ -52,17 +52,20 @@ POST /testing/ai/toggle     AI automatisch laten handelen aan/uit
 GET  /history?filter=...    all / buy / sell / today / week / month
 ```
 
-Starten:
+Starten (Windows: dubbelklik `backend/start-windows.bat`, die doet dit allemaal):
 
 ```bash
 cd backend
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-cp .env.example .env        # vul TWELVEDATA_API_KEY + APP_PASSWORD_HASH in
-.venv/bin/python -m app.tools.hash_password    # maakt de wachtwoord-hash
+.venv/bin/python eerste-keer-instellen.py     # maakt .env: wachtwoord-hash, sessiesleutel, API-sleutel
 .venv/bin/uvicorn app.main:app --reload --port 8000
 ```
 
 Testinterface: http://localhost:8000/docs
+
+Wachtwoorden gaan via `bcrypt` rechtstreeks, niet via `passlib` — dat pakket
+wordt sinds 2020 niet meer onderhouden en crasht op bcrypt 5. Bestaande hashes
+blijven werken; het formaat is hetzelfde.
 
 **Belangrijk:** is de marktdata-API niet bereikbaar (storing, rate limit, geen
 sleutel), dan geeft de backend `"status": "unavailable"` terug met uitleg — nooit

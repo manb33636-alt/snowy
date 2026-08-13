@@ -3,10 +3,18 @@
 Echte FastAPI-backend voor Snowy_Tracks: live marktdata (Twelve Data), AI-advies,
 Testing Mode met echte koop/verkoop-P&L, en trading history met filters.
 
+## Snelste weg op Windows
+
+Dubbelklik **`start-windows.bat`**. Dat maakt de Python-omgeving aan, haalt de
+onderdelen op, vraagt de eerste keer om je wachtwoord en je Twelve Data-sleutel,
+en start de backend op http://localhost:8000. Python moet geïnstalleerd zijn
+(via [python.org](https://python.org/downloads), met *Add python.exe to PATH*
+aangevinkt).
+
 ## 1. Installeren
 
 ```bash
-cd snowy_tracks_backend
+cd backend
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -14,11 +22,16 @@ pip install -r requirements.txt
 
 ## 2. Configureren
 
+Het makkelijkst:
+
 ```bash
-cp .env.example .env
+python eerste-keer-instellen.py
 ```
 
-Vul in `.env` in:
+Die maakt `.env` aan, vraagt je wachtwoord (en slaat alleen de bcrypt-hash op),
+maakt een sessiesleutel aan en vraagt je Twelve Data-sleutel.
+
+Liever met de hand? Kopieer `.env.example` naar `.env` en vul in:
 - `TWELVEDATA_API_KEY` — gratis account aanmaken op https://twelvedata.com/
 - `APP_PASSWORD_HASH` — genereer met:
   ```bash
