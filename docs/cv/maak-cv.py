@@ -20,7 +20,8 @@ T = {
  "nl": dict(
   bestand="cv-tim-hendriks-nl.html", lang="nl", titel="CV Tim Hendriks",
   rol="Mede-oprichter HuurDirect", rol2="Student International Business",
-  tagline="“Kwaliteitsgereedschap huren net zo eenvoudig maken als online winkelen.”",
+  tagline="“Snel schakelen, de lat hoog leggen en altijd blijven leren.”", motto="Motto",
+  stats=[("5+","jaar werkervaring"),("3","talen"),("2","landen gewerkt"),("8","rollen vervuld")],
   contact="Contact", plaats="’s-Hertogenbosch",
   talen="Talen", taal=[("Nederlands","Moedertaal",5),("Engels","Vloeiend",4),("Spaans","Basis",2)],
   vaardigheden="Vaardigheden",
@@ -29,12 +30,12 @@ T = {
   scholen=[dict(kleur="#5B3DBF", titel="MBO 4 International Business", org="Summa College · Eindhoven", periode="2024 – 2027 (verwacht)", extra="Spaans, marketing, export, sales"),
            dict(kleur="#D6455F", titel="HAVO", org="Maurick College · Vught", periode="2018 – 2024", extra="Nederlands, Engels, economie, scheikunde, natuurkunde, biologie, wiskunde")],
   profiel="Profiel",
-  profieltekst="Ondernemende student International Business en mede-oprichter van <b>HuurDirect</b>, een online verhuurplatform voor professioneel gereedschap, machines en materieel. Ik heb het platform mee opgebouwd vanaf nul: propositie, merk, website, verhuurproces en klantenservice. Met ervaring in sales, logistiek en internationale handel schakel ik snel tussen rollen. Ik stel hoge eisen aan kwaliteit en zet automatisering en AI-tools in om slimmer te werken.",
+  profieltekst="Ondernemende student International Business met een commerciële instelling en een brede basis: sales, klantcontact, logistiek en internationale handel, in Nederland en Spanje. Ik pak dingen aan, schakel snel tussen rollen en leer het liefst door te doen. Als mede-oprichter van <b>HuurDirect</b> weet ik wat het is om iets vanaf nul op te bouwen, met een hoge lat voor kwaliteit.",
   werk="Werkervaring", kern="Kernkwaliteiten",
   kernpunten=[("Eigenaarschap","Neemt verantwoordelijkheid voor het hele resultaat."),("Flexibel","Bewezen in sales, service, logistiek en ondernemen."),("Leergierig","Maakt zich nieuwe systemen en tools snel eigen.")],
   banen=[
    dict(mono="HD", kleur="#F26522", titel="Mede-oprichter", org="HuurDirect", periode="jan 2026 – heden", plaats="Noord-Brabant · hybride",
-        context="Online verhuurplatform voor professioneel gereedschap en machines: huren net zo eenvoudig als online winkelen.",
+        context="Online verhuurplatform voor professioneel gereedschap, machines en materieel.",
         punten=["Platform mee opgezet vanaf nul: propositie, assortiment, merk en website; live en continu verbeterd.",
                 "Verantwoordelijk voor het verhuurproces van reservering tot bezorging en retour, plus klantcontact en administratie.",
                 "Online marketing, SEO en conversie; beheerpaneel en automatisering ingericht om zonder extra handwerk op te schalen."]),
@@ -45,13 +46,13 @@ T = {
         context="Fulfilmentbedrijf voor opslag, verwerking en verzending van webshoporders.",
         punten=["Orders verzamelen, inpakken en verzendklaar maken; nauwkeurig en snel, ook in piekperiodes."]),
    dict(mono="JS", kleur="#C2552F", titel="Stagiair", org="JS Trade Agency", periode="okt 2025 – jan 2026", plaats="Castellón · Spanje",
-        context="Handelsagentuur voor keramische tegels in Castellón, het hart van de Spaanse tegelindustrie.",
+        context="Tegelagentuur in Castellón, het hart van de Spaanse keramische tegelindustrie.",
         punten=["Potentiële klanten benaderd en deals gesloten voor de verkoop en export van tegels; Spaans in de praktijk gebracht."]),
    dict(mono="E", kleur="#E4003A", titel="Telefonisch verkoper", org="Eneco", periode="okt 2025 – jan 2026", plaats="naast de stage",
         context="Een van de grootste energieleveranciers van Nederland.",
         punten=["Klanten gebeld om energiecontracten te verkopen; overtuigend en resultaatgericht aan de telefoon."]),
    dict(mono="C", kleur="#1E9E78", titel="Stagiair", org="Contronics Dry Misting", periode="sep 2024 – dec 2024", plaats="stage",
-        context="Ontwikkelaar van duurzame droge-verneveling voor luchtbevochtiging en het vers houden van producten.",
+        context="Ontwikkelaar van duurzame droge-vernevelingstechniek voor luchtbevochtiging.",
         punten=["Dossiers en administratie op orde gebracht, meegedacht over nieuwe ideeën en een grote vakbeurs mee voorbereid."]),
    dict(mono="ILS", kleur="#3A3F4B", titel="Bezorger", org="I Love Sushi", periode="sep 2022 – <span class=invul>[einddatum]</span>", plaats="",
         context="Landelijke sushiketen met bezorging en afhaal.",
@@ -63,7 +64,8 @@ T = {
  "en": dict(
   bestand="cv-tim-hendriks-en.html", lang="en", titel="CV Tim Hendriks",
   rol="Co-founder HuurDirect", rol2="International Business student",
-  tagline="“Making renting quality tools as easy as shopping online.”",
+  tagline="“Switch fast, aim high and never stop learning.”", motto="Motto",
+  stats=[("5+","years of experience"),("3","languages"),("2","countries worked in"),("8","roles held")],
   contact="Contact", plaats="’s-Hertogenbosch, NL",
   talen="Languages", taal=[("Dutch","Native",5),("English","Fluent",4),("Spanish","Basic",2)],
   vaardigheden="Skills",
@@ -72,12 +74,12 @@ T = {
   scholen=[dict(kleur="#5B3DBF", titel="International Business (MBO 4)", org="Summa College · Eindhoven", periode="2024 – 2027 (expected)", extra="Spanish, marketing, export, sales"),
            dict(kleur="#D6455F", titel="HAVO (senior secondary)", org="Maurick College · Vught", periode="2018 – 2024", extra="Dutch, English, economics, chemistry, physics, biology, mathematics")],
   profiel="Profile",
-  profieltekst="Entrepreneurial International Business student and co-founder of <b>HuurDirect</b>, an online rental platform for professional tools, machinery and equipment. I helped build the platform from scratch: proposition, brand, website, rental process and customer service. With experience in sales, logistics and international trade I switch quickly between roles. I set high quality standards and use automation and AI tools to work smarter.",
+  profieltekst="Entrepreneurial International Business student with a commercial mindset and a broad base: sales, customer contact, logistics and international trade, in the Netherlands and Spain. I take initiative, switch quickly between roles and prefer to learn by doing. As co-founder of <b>HuurDirect</b> I know what it takes to build something from scratch, with a high bar for quality.",
   werk="Work experience", kern="Core strengths",
   kernpunten=[("Ownership","Takes responsibility for the whole result."),("Adaptable","Proven in sales, service, logistics and entrepreneurship."),("Fast learner","Picks up new systems and tools quickly.")],
   banen=[
    dict(mono="HD", kleur="#F26522", titel="Co-founder", org="HuurDirect", periode="Jan 2026 – present", plaats="North Brabant · hybrid",
-        context="Online rental platform for professional tools and machinery: renting as easy as shopping online.",
+        context="Online rental platform for professional tools, machinery and equipment.",
         punten=["Co-built the platform from scratch: proposition, range, brand identity and website; live and continuously improved.",
                 "Responsible for the rental process from booking to delivery and return, plus customer contact and administration.",
                 "Online marketing, SEO and conversion; set up the admin panel and automation to scale without extra manual work."]),
@@ -88,13 +90,13 @@ T = {
         context="Fulfilment company for storage, processing and shipping of web shop orders.",
         punten=["Picking, packing and preparing orders for shipment; accurate and fast, also during peak periods."]),
    dict(mono="JS", kleur="#C2552F", titel="Intern", org="JS Trade Agency", periode="Oct 2025 – Jan 2026", plaats="Castellón · Spain",
-        context="Trade agency for ceramic tiles in Castellón, the heart of the Spanish tile industry.",
+        context="Tile trade agency in Castellón, the heart of the Spanish ceramic tile industry.",
         punten=["Approached potential clients and closed deals for tile sales and export; put my Spanish into practice."]),
    dict(mono="E", kleur="#E4003A", titel="Telesales agent", org="Eneco", periode="Oct 2025 – Jan 2026", plaats="alongside the internship",
         context="One of the largest energy suppliers in the Netherlands.",
         punten=["Called customers to sell energy contracts; persuasive and results-driven on the phone."]),
    dict(mono="C", kleur="#1E9E78", titel="Intern", org="Contronics Dry Misting", periode="Sep 2024 – Dec 2024", plaats="internship",
-        context="Developer of sustainable dry-misting technology for humidification and keeping produce fresh.",
+        context="Developer of sustainable dry-misting technology for humidification.",
         punten=["Organised files and administration, contributed ideas and helped prepare a major trade fair."]),
    dict(mono="ILS", kleur="#3A3F4B", titel="Delivery driver", org="I Love Sushi", periode="Sep 2022 – <span class=invul>[end date]</span>", plaats="",
         context="National sushi chain offering delivery and take-away.",
@@ -117,7 +119,7 @@ html,body{width:210mm;height:297mm;background:var(--paper);font-family:'Inter',s
 .side::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);background-size:6px 6px;opacity:.9}
 .side::after{content:"";position:absolute;width:120mm;height:120mm;border-radius:50%;background:radial-gradient(circle,rgba(242,101,34,.28),transparent 60%);top:-52mm;left:-45mm}
 .side>*{position:relative}
-.photo{width:40mm;height:40mm;border-radius:50%;margin:0 auto 6mm;padding:2mm;background:conic-gradient(from 200deg,var(--oranje),#FFB27A,var(--oranje) 70%,rgba(255,255,255,.25));box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.photo{width:40mm;height:40mm;border-radius:50%;margin:0 auto 6mm;padding:2mm;outline:1px solid rgba(255,255,255,.22);outline-offset:2.2mm;background:conic-gradient(from 200deg,var(--oranje),#FFB27A,var(--oranje) 70%,rgba(255,255,255,.25));box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .photo img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block;border:1.2mm solid var(--navy)}
 .side h3{font-family:'Playfair',serif;font-weight:700;font-size:11pt;letter-spacing:.02em;margin:5.5mm 0 2.6mm;display:flex;align-items:center;gap:3mm}
 .side h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--oranje),rgba(255,255,255,.15))}
@@ -146,21 +148,22 @@ html,body{width:210mm;height:297mm;background:var(--paper);font-family:'Inter',s
 .kern div{font-size:7.6pt;color:#C7CEDD;line-height:1.35}
 .kern b{color:#fff;display:block;font-size:8pt}
 /* ---------- hoofd ---------- */
-.main{position:relative;padding:9mm 10mm 6.5mm 10mm}
+.main{position:relative;padding:8mm 10mm 8mm 10mm}
 .main::before{content:"";position:absolute;right:-30mm;top:-30mm;width:80mm;height:80mm;border-radius:50%;border:14mm solid rgba(242,101,34,.07)}
 .name{font-family:'Playfair',serif;font-weight:700;font-size:31pt;line-height:1;letter-spacing:-.01em;color:var(--navy)}
 .name b{color:var(--oranje);font-weight:700}
 .role{margin-top:2.6mm;display:flex;align-items:center;gap:2.5mm;font-size:7.6pt;font-weight:600;letter-spacing:.1em;white-space:nowrap;text-transform:uppercase;color:var(--navy2)}
 .role i{width:9mm;height:2px;background:var(--oranje);display:inline-block}
 .role span{color:var(--muted);font-weight:500}
-h2{font-family:'Playfair',serif;font-weight:700;font-size:12.5pt;color:var(--navy);margin:4.4mm 0 2.4mm;display:flex;align-items:baseline;gap:3mm}
+.role::after{content:"";flex:1;height:1px;background:var(--line);margin-left:2mm}
+h2{font-family:'Playfair',serif;font-weight:700;font-size:12.5pt;color:var(--navy);margin:3.8mm 0 2.2mm;display:flex;align-items:baseline;gap:3mm}
 h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18em;text-transform:uppercase;color:var(--oranje)}
 .profile{font-size:8.4pt;line-height:1.4;color:#2B3143;padding-left:4mm;border-left:2.5px solid var(--oranje)}
 .profile b{color:var(--navy);font-weight:600}
 /* tijdlijn */
-.tl{position:relative;display:grid;gap:1.5mm;padding-left:12mm}
+.tl{position:relative;display:grid;gap:1.3mm;padding-left:12mm}
 .tl::before{content:"";position:absolute;left:4.6mm;top:2mm;bottom:2mm;width:1.5px;background:linear-gradient(180deg,var(--oranje),var(--line) 25%,var(--line))}
-.job{position:relative;border-radius:2.2mm;padding:1.7mm 3mm 1.7mm 3.4mm;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 9%,white),color-mix(in srgb,var(--c) 3%,white) 60%,white);border:1px solid color-mix(in srgb,var(--c) 22%,white)}
+.job{position:relative;border-radius:2.2mm;padding:1.5mm 3mm 1.5mm 3.4mm;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 9%,white),color-mix(in srgb,var(--c) 3%,white) 60%,white);border:1px solid color-mix(in srgb,var(--c) 22%,white);border-left:3px solid var(--c);box-shadow:0 2px 8px rgba(18,28,51,.05)}
 .job::before{content:attr(data-mono);position:absolute;left:-12.2mm;top:1.2mm;width:8.8mm;height:8.8mm;border-radius:2.4mm;background:var(--c);color:#fff;font-weight:700;font-size:7.4pt;display:flex;align-items:center;justify-content:center;letter-spacing:.02em;box-shadow:0 4px 10px color-mix(in srgb,var(--c) 45%,transparent)}
 .job::after{content:"";position:absolute;left:-3.6mm;top:4.8mm;width:2.6mm;height:1.5px;background:var(--c)}
 .job header{display:flex;justify-content:space-between;align-items:baseline;gap:3mm}
@@ -174,7 +177,13 @@ h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18e
 .job li{position:relative;padding-left:3.2mm;font-size:7.9pt;line-height:1.38;color:#2B3143}
 .job li::before{content:"";position:absolute;left:0;top:1.55mm;width:1.5mm;height:1.5mm;border-radius:50%;background:var(--c)}
 .invul{color:#C00000;font-style:italic}
-.foot{position:absolute;left:0;right:0;bottom:0;height:5mm;background:linear-gradient(90deg,var(--navy) 70mm,var(--oranje) 70mm,var(--oranje))}
+.foot{position:absolute;left:0;right:0;bottom:0;height:6.5mm;background:linear-gradient(90deg,var(--navy) 70mm,var(--oranje) 70mm,var(--oranje));display:flex;align-items:center;justify-content:flex-end;padding-right:10mm}
+.foot span{font-size:6.6pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-top:3.2mm}
+.stats div{display:flex;align-items:baseline;gap:1.6mm;padding:1.6mm 2.4mm;border-radius:2mm;background:linear-gradient(135deg,#F4F6FA,#FFFFFF);border:1px solid var(--line)}
+.stats b{font-family:'Playfair',serif;font-size:14pt;font-weight:700;color:var(--oranje);line-height:1}
+.stats span{font-size:6.6pt;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--navy2);line-height:1.15}
+.now{display:inline-block;width:1.8mm;height:1.8mm;border-radius:50%;background:var(--c);margin-right:1.2mm;vertical-align:middle;box-shadow:0 0 0 1.2mm color-mix(in srgb,var(--c) 22%,white)}
 """
 
 def html(t):
@@ -190,9 +199,10 @@ def html(t):
     tags = "".join(f"<span class='{'hi' if i==0 else ''}'>{s}</span>" for i,s in enumerate(t['skills']))
     edu = "".join(f"<div style='--c:{s['kleur']}'><b>{s['titel']}</b><em>{s['org']}</em><span>{s['periode']}</span><small>{s['extra']}</small></div>" for s in t['scholen'])
     kern = "".join(f"<div><b>{k}</b>{v}</div>" for k,v in t['kernpunten'])
+    stats = "".join(f"<div><b>{n}</b><span>{l}</span></div>" for n,l in t['stats'])
     jobs = "".join(f"""
       <article class=job style='--c:{b['kleur']}' data-mono='{b['mono']}'>
-        <header><h4>{b['titel']} <span>· {b['org']}</span></h4><time>{b['periode']}{' <em>· ' + b['plaats'] + '</em>' if b['plaats'] else ''}</time></header>
+        <header><h4>{b['titel']} <span>· {b['org']}</span></h4><time>{'<i class=now></i>' if ('heden' in b['periode'] or 'present' in b['periode']) else ''}{b['periode']}{' <em>· ' + b['plaats'] + '</em>' if b['plaats'] else ''}</time></header>
         <div class=ctx>{b['context']}</div>
         <ul>{''.join(f'<li>{p}</li>' for p in b['punten'])}</ul>
       </article>""" for b in t['banen'])
@@ -206,17 +216,18 @@ def html(t):
     <h3>{t['talen']}</h3><div class=lang>{talen}</div>
     <h3>{t['vaardigheden']}</h3><div class=tags>{tags}</div>
     <h3>{t['opleiding']}</h3><div class=edu>{edu}</div>
-    <div class=tagline><b>HuurDirect</b>{t['tagline']}</div>
+    <div class=tagline><b>{t['motto']}</b>{t['tagline']}</div>
   </aside>
   <main class=main>
     <div class=name>{naam}</div>
     <div class=role><i></i>{t['rol']} <span>· {t['rol2']}</span></div>
     <h2>{t['profiel']}<small>{'wie ik ben' if t['lang']=='nl' else 'who I am'}</small></h2>
     <p class=profile>{t['profieltekst']}</p>
+    <div class=stats>{stats}</div>
     <h2>{t['werk']}<small>{'tijdlijn' if t['lang']=='nl' else 'timeline'}</small></h2>
     <div class=tl>{jobs}</div>
   </main>
-  <div class=foot></div>
+  <div class=foot><span>Tim Hendriks · tim@timos.nl · 06 30 26 51 20 · huurdirect.eu</span></div>
 </div></body></html>"""
 
 for taal, t in T.items():

@@ -11,7 +11,7 @@ html,body{width:210mm;height:297mm;background:var(--paper);font-family:'Inter',s
 .side::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);background-size:6px 6px;opacity:.9}
 .side::after{content:"";position:absolute;width:120mm;height:120mm;border-radius:50%;background:radial-gradient(circle,rgba(242,101,34,.28),transparent 60%);top:-52mm;left:-45mm}
 .side>*{position:relative}
-.photo{width:40mm;height:40mm;border-radius:50%;margin:0 auto 6mm;padding:2mm;background:conic-gradient(from 200deg,var(--oranje),#FFB27A,var(--oranje) 70%,rgba(255,255,255,.25));box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.photo{width:40mm;height:40mm;border-radius:50%;margin:0 auto 6mm;padding:2mm;outline:1px solid rgba(255,255,255,.22);outline-offset:2.2mm;background:conic-gradient(from 200deg,var(--oranje),#FFB27A,var(--oranje) 70%,rgba(255,255,255,.25));box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .photo img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block;border:1.2mm solid var(--navy)}
 .side h3{font-family:'Playfair',serif;font-weight:700;font-size:11pt;letter-spacing:.02em;margin:5.5mm 0 2.6mm;display:flex;align-items:center;gap:3mm}
 .side h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--oranje),rgba(255,255,255,.15))}
@@ -40,21 +40,22 @@ html,body{width:210mm;height:297mm;background:var(--paper);font-family:'Inter',s
 .kern div{font-size:7.6pt;color:#C7CEDD;line-height:1.35}
 .kern b{color:#fff;display:block;font-size:8pt}
 /* ---------- hoofd ---------- */
-.main{position:relative;padding:9mm 10mm 6.5mm 10mm}
+.main{position:relative;padding:8mm 10mm 8mm 10mm}
 .main::before{content:"";position:absolute;right:-30mm;top:-30mm;width:80mm;height:80mm;border-radius:50%;border:14mm solid rgba(242,101,34,.07)}
 .name{font-family:'Playfair',serif;font-weight:700;font-size:31pt;line-height:1;letter-spacing:-.01em;color:var(--navy)}
 .name b{color:var(--oranje);font-weight:700}
 .role{margin-top:2.6mm;display:flex;align-items:center;gap:2.5mm;font-size:7.6pt;font-weight:600;letter-spacing:.1em;white-space:nowrap;text-transform:uppercase;color:var(--navy2)}
 .role i{width:9mm;height:2px;background:var(--oranje);display:inline-block}
 .role span{color:var(--muted);font-weight:500}
-h2{font-family:'Playfair',serif;font-weight:700;font-size:12.5pt;color:var(--navy);margin:4.4mm 0 2.4mm;display:flex;align-items:baseline;gap:3mm}
+.role::after{content:"";flex:1;height:1px;background:var(--line);margin-left:2mm}
+h2{font-family:'Playfair',serif;font-weight:700;font-size:12.5pt;color:var(--navy);margin:3.8mm 0 2.2mm;display:flex;align-items:baseline;gap:3mm}
 h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18em;text-transform:uppercase;color:var(--oranje)}
 .profile{font-size:8.4pt;line-height:1.4;color:#2B3143;padding-left:4mm;border-left:2.5px solid var(--oranje)}
 .profile b{color:var(--navy);font-weight:600}
 /* tijdlijn */
-.tl{position:relative;display:grid;gap:1.5mm;padding-left:12mm}
+.tl{position:relative;display:grid;gap:1.3mm;padding-left:12mm}
 .tl::before{content:"";position:absolute;left:4.6mm;top:2mm;bottom:2mm;width:1.5px;background:linear-gradient(180deg,var(--oranje),var(--line) 25%,var(--line))}
-.job{position:relative;border-radius:2.2mm;padding:1.7mm 3mm 1.7mm 3.4mm;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 9%,white),color-mix(in srgb,var(--c) 3%,white) 60%,white);border:1px solid color-mix(in srgb,var(--c) 22%,white)}
+.job{position:relative;border-radius:2.2mm;padding:1.5mm 3mm 1.5mm 3.4mm;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 9%,white),color-mix(in srgb,var(--c) 3%,white) 60%,white);border:1px solid color-mix(in srgb,var(--c) 22%,white);border-left:3px solid var(--c);box-shadow:0 2px 8px rgba(18,28,51,.05)}
 .job::before{content:attr(data-mono);position:absolute;left:-12.2mm;top:1.2mm;width:8.8mm;height:8.8mm;border-radius:2.4mm;background:var(--c);color:#fff;font-weight:700;font-size:7.4pt;display:flex;align-items:center;justify-content:center;letter-spacing:.02em;box-shadow:0 4px 10px color-mix(in srgb,var(--c) 45%,transparent)}
 .job::after{content:"";position:absolute;left:-3.6mm;top:4.8mm;width:2.6mm;height:1.5px;background:var(--c)}
 .job header{display:flex;justify-content:space-between;align-items:baseline;gap:3mm}
@@ -68,7 +69,13 @@ h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18e
 .job li{position:relative;padding-left:3.2mm;font-size:7.9pt;line-height:1.38;color:#2B3143}
 .job li::before{content:"";position:absolute;left:0;top:1.55mm;width:1.5mm;height:1.5mm;border-radius:50%;background:var(--c)}
 .invul{color:#C00000;font-style:italic}
-.foot{position:absolute;left:0;right:0;bottom:0;height:5mm;background:linear-gradient(90deg,var(--navy) 70mm,var(--oranje) 70mm,var(--oranje))}
+.foot{position:absolute;left:0;right:0;bottom:0;height:6.5mm;background:linear-gradient(90deg,var(--navy) 70mm,var(--oranje) 70mm,var(--oranje));display:flex;align-items:center;justify-content:flex-end;padding-right:10mm}
+.foot span{font-size:6.6pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-top:3.2mm}
+.stats div{display:flex;align-items:baseline;gap:1.6mm;padding:1.6mm 2.4mm;border-radius:2mm;background:linear-gradient(135deg,#F4F6FA,#FFFFFF);border:1px solid var(--line)}
+.stats b{font-family:'Playfair',serif;font-size:14pt;font-weight:700;color:var(--oranje);line-height:1}
+.stats span{font-size:6.6pt;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--navy2);line-height:1.15}
+.now{display:inline-block;width:1.8mm;height:1.8mm;border-radius:50%;background:var(--c);margin-right:1.2mm;vertical-align:middle;box-shadow:0 0 0 1.2mm color-mix(in srgb,var(--c) 22%,white)}
 </style></head><body>
 <div class=page>
   <aside class=side>
@@ -84,33 +91,34 @@ h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18e
     <h3>Languages</h3><div class=lang><div><b>Dutch</b><span>Native</span><div class=dots><i class=on></i><i class=on></i><i class=on></i><i class=on></i><i class=on></i></div></div><div><b>English</b><span>Fluent</span><div class=dots><i class=on></i><i class=on></i><i class=on></i><i class=on></i><i></i></div></div><div><b>Spanish</b><span>Basic</span><div class=dots><i class=on></i><i class=on></i><i></i><i></i><i></i></div></div></div>
     <h3>Skills</h3><div class=tags><span class='hi'>Entrepreneurship</span><span class=''>Sales</span><span class=''>Customer contact</span><span class=''>Online marketing</span><span class=''>SEO & conversion</span><span class=''>Web shop management</span><span class=''>Leadership</span><span class=''>Communication</span><span class=''>Planning</span><span class=''>Critical thinking</span><span class=''>AI tools</span></div>
     <h3>Education</h3><div class=edu><div style='--c:#5B3DBF'><b>International Business (MBO 4)</b><em>Summa College · Eindhoven</em><span>2024 – 2027 (expected)</span><small>Spanish, marketing, export, sales</small></div><div style='--c:#D6455F'><b>HAVO (senior secondary)</b><em>Maurick College · Vught</em><span>2018 – 2024</span><small>Dutch, English, economics, chemistry, physics, biology, mathematics</small></div></div>
-    <div class=tagline><b>HuurDirect</b>“Making renting quality tools as easy as shopping online.”</div>
+    <div class=tagline><b>Motto</b>“Switch fast, aim high and never stop learning.”</div>
   </aside>
   <main class=main>
     <div class=name>Tim <b>Hendriks</b></div>
     <div class=role><i></i>Co-founder HuurDirect <span>· International Business student</span></div>
     <h2>Profile<small>who I am</small></h2>
-    <p class=profile>Entrepreneurial International Business student and co-founder of <b>HuurDirect</b>, an online rental platform for professional tools, machinery and equipment. I helped build the platform from scratch: proposition, brand, website, rental process and customer service. With experience in sales, logistics and international trade I switch quickly between roles. I set high quality standards and use automation and AI tools to work smarter.</p>
+    <p class=profile>Entrepreneurial International Business student with a commercial mindset and a broad base: sales, customer contact, logistics and international trade, in the Netherlands and Spain. I take initiative, switch quickly between roles and prefer to learn by doing. As co-founder of <b>HuurDirect</b> I know what it takes to build something from scratch, with a high bar for quality.</p>
+    <div class=stats><div><b>5+</b><span>years of experience</span></div><div><b>3</b><span>languages</span></div><div><b>2</b><span>countries worked in</span></div><div><b>8</b><span>roles held</span></div></div>
     <h2>Work experience<small>timeline</small></h2>
     <div class=tl>
       <article class=job style='--c:#F26522' data-mono='HD'>
-        <header><h4>Co-founder <span>· HuurDirect</span></h4><time>Jan 2026 – present <em>· North Brabant · hybrid</em></time></header>
-        <div class=ctx>Online rental platform for professional tools and machinery: renting as easy as shopping online.</div>
+        <header><h4>Co-founder <span>· HuurDirect</span></h4><time><i class=now></i>Jan 2026 – present <em>· North Brabant · hybrid</em></time></header>
+        <div class=ctx>Online rental platform for professional tools, machinery and equipment.</div>
         <ul><li>Co-built the platform from scratch: proposition, range, brand identity and website; live and continuously improved.</li><li>Responsible for the rental process from booking to delivery and return, plus customer contact and administration.</li><li>Online marketing, SEO and conversion; set up the admin panel and automation to scale without extra manual work.</li></ul>
       </article>
       <article class=job style='--c:#B08D2B' data-mono='VD'>
-        <header><h4>Private chauffeur <span>· Van Dijk Services</span></h4><time>Mar 2026 – present <em>· part-time</em></time></header>
+        <header><h4>Private chauffeur <span>· Van Dijk Services</span></h4><time><i class=now></i>Mar 2026 – present <em>· part-time</em></time></header>
         <div class=ctx>Chauffeur services for private and business clients.</div>
         <ul><li>Transported clients in a representative, discreet and punctual manner; planned and carried out journeys independently.</li></ul>
       </article>
       <article class=job style='--c:#00A3E0' data-mono='M'>
-        <header><h4>Logistics employee <span>· Monta</span></h4><time>Jul 2025 – present <em>· part-time · Engelen</em></time></header>
+        <header><h4>Logistics employee <span>· Monta</span></h4><time><i class=now></i>Jul 2025 – present <em>· part-time · Engelen</em></time></header>
         <div class=ctx>Fulfilment company for storage, processing and shipping of web shop orders.</div>
         <ul><li>Picking, packing and preparing orders for shipment; accurate and fast, also during peak periods.</li></ul>
       </article>
       <article class=job style='--c:#C2552F' data-mono='JS'>
         <header><h4>Intern <span>· JS Trade Agency</span></h4><time>Oct 2025 – Jan 2026 <em>· Castellón · Spain</em></time></header>
-        <div class=ctx>Trade agency for ceramic tiles in Castellón, the heart of the Spanish tile industry.</div>
+        <div class=ctx>Tile trade agency in Castellón, the heart of the Spanish ceramic tile industry.</div>
         <ul><li>Approached potential clients and closed deals for tile sales and export; put my Spanish into practice.</li></ul>
       </article>
       <article class=job style='--c:#E4003A' data-mono='E'>
@@ -120,7 +128,7 @@ h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18e
       </article>
       <article class=job style='--c:#1E9E78' data-mono='C'>
         <header><h4>Intern <span>· Contronics Dry Misting</span></h4><time>Sep 2024 – Dec 2024 <em>· internship</em></time></header>
-        <div class=ctx>Developer of sustainable dry-misting technology for humidification and keeping produce fresh.</div>
+        <div class=ctx>Developer of sustainable dry-misting technology for humidification.</div>
         <ul><li>Organised files and administration, contributed ideas and helped prepare a major trade fair.</li></ul>
       </article>
       <article class=job style='--c:#3A3F4B' data-mono='ILS'>
@@ -134,5 +142,5 @@ h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18e
         <ul><li>Engaged potential clients to promote and sell products; hit monthly targets and built repeat business.</li></ul>
       </article></div>
   </main>
-  <div class=foot></div>
+  <div class=foot><span>Tim Hendriks · tim@timos.nl · 06 30 26 51 20 · huurdirect.eu</span></div>
 </div></body></html>
