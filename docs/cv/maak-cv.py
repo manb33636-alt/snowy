@@ -7,6 +7,7 @@ def b64(p): return base64.b64encode((HIER / p).read_bytes()).decode()
 FOTO = b64("foto-tim.jpg")
 INTER = b64("fonts/Inter.woff2")
 PLAYFAIR = b64("fonts/PlayfairDisplay.woff2")
+QR = (HIER / "qr-linkedin.svg").read_text()
 
 ICONS = {
   "tel": '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11 11 0 0 0 3.5.55 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11 11 0 0 0 .55 3.5 1 1 0 0 1-.25 1z"/></svg>',
@@ -25,10 +26,11 @@ T = {
   contact="Contact", plaats="’s-Hertogenbosch",
   talen="Talen", taal=[("Nederlands","Moedertaal",5),("Engels","Vloeiend",4),("Spaans","Basis",2)],
   vaardigheden="Vaardigheden",
-  skills=["Ondernemerschap","Sales","Klantcontact","Online marketing","SEO & conversie","Webshopbeheer","Leiderschap","Communicatie","Planning","Kritisch denken","AI-tools"],
+  skills=[("Commercieel",["Sales","Klantcontact","Communicatie","Leiderschap"]),("Digitaal",["Online marketing","SEO & conversie","Webshopbeheer","AI-tools"]),("Persoonlijk",["Ondernemerschap","Planning","Kritisch denken"])],
+  eyebrow="Curriculum vitae · 2026", qrlabel="LinkedIn",
   opleiding="Opleiding",
   scholen=[dict(kleur="#5B3DBF", titel="MBO 4 International Business", org="Summa College · Eindhoven", periode="2024 – 2027 (verwacht)", extra="Spaans, marketing, export, sales"),
-           dict(kleur="#D6455F", titel="HAVO", org="Maurick College · Vught", periode="2018 – 2024", extra="Nederlands, Engels, economie, scheikunde, natuurkunde, biologie, wiskunde")],
+           dict(kleur="#D6455F", titel="HAVO", org="Maurick College · Vught", periode="2018 – 2024", extra="Economie, wiskunde, natuurkunde, scheikunde, biologie")],
   profiel="Profiel",
   profieltekst="Ondernemende student International Business met een commerciële instelling en een brede basis: sales, klantcontact, logistiek en internationale handel, in Nederland en Spanje. Ik pak dingen aan, schakel snel tussen rollen en leer het liefst door te doen. Als mede-oprichter van <b>HuurDirect</b> weet ik wat het is om iets vanaf nul op te bouwen, met een hoge lat voor kwaliteit.",
   werk="Werkervaring", kern="Kernkwaliteiten",
@@ -69,10 +71,11 @@ T = {
   contact="Contact", plaats="’s-Hertogenbosch, NL",
   talen="Languages", taal=[("Dutch","Native",5),("English","Fluent",4),("Spanish","Basic",2)],
   vaardigheden="Skills",
-  skills=["Entrepreneurship","Sales","Customer contact","Online marketing","SEO & conversion","Web shop management","Leadership","Communication","Planning","Critical thinking","AI tools"],
+  skills=[("Commercial",["Sales","Customer contact","Communication","Leadership"]),("Digital",["Online marketing","SEO & conversion","Web shop management","AI tools"]),("Personal",["Entrepreneurship","Planning","Critical thinking"])],
+  eyebrow="Curriculum vitae · 2026", qrlabel="LinkedIn",
   opleiding="Education",
   scholen=[dict(kleur="#5B3DBF", titel="International Business (MBO 4)", org="Summa College · Eindhoven", periode="2024 – 2027 (expected)", extra="Spanish, marketing, export, sales"),
-           dict(kleur="#D6455F", titel="HAVO (senior secondary)", org="Maurick College · Vught", periode="2018 – 2024", extra="Dutch, English, economics, chemistry, physics, biology, mathematics")],
+           dict(kleur="#D6455F", titel="HAVO (senior secondary)", org="Maurick College · Vught", periode="2018 – 2024", extra="Economics, mathematics, physics, chemistry, biology")],
   profiel="Profile",
   profieltekst="Entrepreneurial International Business student with a commercial mindset and a broad base: sales, customer contact, logistics and international trade, in the Netherlands and Spain. I take initiative, switch quickly between roles and prefer to learn by doing. As co-founder of <b>HuurDirect</b> I know what it takes to build something from scratch, with a high bar for quality.",
   werk="Work experience", kern="Core strengths",
@@ -115,40 +118,52 @@ CSS = """
 html,body{width:210mm;height:297mm;background:var(--paper);font-family:'Inter',system-ui,sans-serif;color:var(--ink);font-size:8.3pt;line-height:1.36;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{position:relative;width:210mm;height:297mm;overflow:hidden;display:grid;grid-template-columns:70mm 1fr}
 /* ---------- zijbalk ---------- */
-.side{position:relative;background:linear-gradient(170deg,var(--navy2) 0%,var(--navy) 60%,#0D1426 100%);color:#fff;padding:11mm 8mm 10mm 9mm;overflow:hidden}
+.side{position:relative;background:linear-gradient(170deg,var(--navy2) 0%,var(--navy) 60%,#0D1426 100%);color:#fff;padding:9mm 8mm 9mm 9mm;overflow:hidden;display:flex;flex-direction:column}
 .side::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);background-size:6px 6px;opacity:.9}
 .side::after{content:"";position:absolute;width:120mm;height:120mm;border-radius:50%;background:radial-gradient(circle,rgba(242,101,34,.28),transparent 60%);top:-52mm;left:-45mm}
+.side .glow,.side::before,.side::after{z-index:0}
+.side .glow{position:absolute;width:90mm;height:90mm;border-radius:50%;background:radial-gradient(circle,rgba(242,101,34,.16),transparent 60%);bottom:-40mm;right:-45mm;pointer-events:none}
 .side>*{position:relative}
-.photo{width:40mm;height:40mm;border-radius:50%;margin:0 auto 6mm;padding:2mm;outline:1px solid rgba(255,255,255,.22);outline-offset:2.2mm;background:conic-gradient(from 200deg,var(--oranje),#FFB27A,var(--oranje) 70%,rgba(255,255,255,.25));box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.photo{width:38mm;height:38mm;border-radius:50%;margin:0 auto 5mm;padding:2mm;outline:1px solid rgba(255,255,255,.22);outline-offset:2.2mm;background:conic-gradient(from 200deg,var(--oranje),#FFB27A,var(--oranje) 70%,rgba(255,255,255,.25));box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .photo img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block;border:1.2mm solid var(--navy)}
-.side h3{font-family:'Playfair',serif;font-weight:700;font-size:11pt;letter-spacing:.02em;margin:5.5mm 0 2.6mm;display:flex;align-items:center;gap:3mm}
+.side h3{font-family:'Playfair',serif;font-weight:700;font-size:10.5pt;letter-spacing:.02em;margin:4.8mm 0 2.4mm;display:flex;align-items:center;gap:3mm}
 .side h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--oranje),rgba(255,255,255,.15))}
-.contact{list-style:none;display:grid;gap:2.1mm}
-.contact li{display:grid;grid-template-columns:5mm 1fr;align-items:center;gap:2.5mm;font-size:8.2pt;color:#E5E9F2}
+.contact{list-style:none;display:grid;gap:1.8mm}
+.contact li{display:grid;grid-template-columns:5mm 1fr;align-items:center;gap:2.5mm;font-size:7.9pt;line-height:1.25;color:#E5E9F2}
 .contact svg{width:4.2mm;height:4.2mm;fill:var(--oranje)}
 .contact small{display:block;color:#8F9AB3;font-size:6.6pt;letter-spacing:.08em;text-transform:uppercase}
-.lang{display:grid;gap:2mm}
+.lang{display:grid;gap:1.4mm}
 .lang div{display:flex;justify-content:space-between;align-items:center;font-size:8.2pt}
 .lang span{color:#9AA5BD;font-size:7.4pt}
 .dots{display:flex;gap:1.2mm}
 .dots i{width:2.4mm;height:2.4mm;border-radius:50%;background:rgba(255,255,255,.16)}
 .dots i.on{background:var(--oranje);box-shadow:0 0 6px rgba(242,101,34,.6)}
-.tags{display:flex;flex-wrap:wrap;gap:1.6mm}
-.tags span{font-size:7.2pt;font-weight:500;padding:1.1mm 2.4mm;border:1px solid rgba(255,255,255,.22);border-radius:99px;color:#EDF0F6;background:rgba(255,255,255,.04)}
+.tags{display:flex;flex-wrap:wrap;gap:1.2mm}
+.tags span{font-size:6.9pt;font-weight:500;padding:.8mm 2.1mm;border:1px solid rgba(255,255,255,.22);border-radius:99px;color:#EDF0F6;background:rgba(255,255,255,.04)}
 .tags span.hi{background:var(--oranje);border-color:var(--oranje);color:#fff}
-.edu{display:grid;gap:3mm}
+.edu{display:grid;gap:2.2mm}
 .edu div{padding-left:3.5mm;border-left:2px solid var(--c)}
 .edu b{display:block;font-size:8.4pt;color:#fff}
 .edu em{display:block;font-style:normal;color:#C7CEDD;font-size:7.6pt}
 .edu span{display:block;color:#8F9AB3;font-size:7pt;margin-top:.4mm}
-.edu small{display:block;color:#AEB7C9;font-size:7pt;margin-top:.6mm;line-height:1.3}
-.tagline{position:absolute;left:9mm;right:8mm;bottom:11mm;font-family:'Playfair',serif;font-style:italic;font-size:9pt;color:#C7CEDD;line-height:1.35;padding-top:3mm;border-top:1px solid rgba(255,255,255,.14)}
+.edu small{display:block;color:#AEB7C9;font-size:6.8pt;margin-top:.5mm;line-height:1.3}
+.tagline{font-family:'Playfair',serif;font-style:italic;font-size:8.2pt;color:#C7CEDD;line-height:1.35}
 .tagline b{display:block;font-family:'Inter';font-style:normal;font-weight:600;font-size:6.6pt;letter-spacing:.16em;text-transform:uppercase;color:var(--oranje);margin-bottom:1mm}
+.grps{display:grid;gap:1.6mm}
+.grp small{display:block;font-size:6.4pt;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--oranje);margin-bottom:.8mm}
+.bottom{margin-top:auto;padding-top:3mm;display:grid;grid-template-columns:1fr 18mm;gap:3mm;align-items:end;border-top:1px solid rgba(255,255,255,.14)}
+.qr{background:#fff;border-radius:1.6mm;padding:1.4mm 1.4mm 1mm;display:grid;gap:.8mm;justify-items:center}
+.qr svg{width:15.2mm;height:15.2mm;display:block}
+.qr small{font-size:5pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);white-space:nowrap}
+.eyebrow{font-size:6.8pt;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--oranje);margin-bottom:2mm;display:flex;align-items:center;gap:2.5mm}
+.eyebrow::before{content:"";width:6mm;height:1.5px;background:var(--oranje)}
+.wm{position:absolute;right:2.6mm;bottom:.2mm;font-family:'Playfair',serif;font-weight:700;font-size:22pt;line-height:1;color:var(--c);opacity:.07;letter-spacing:-.02em;pointer-events:none}
+h2 b{font-family:'Inter';font-weight:700;font-size:8pt;color:var(--oranje);padding:.6mm 1.6mm;border:1.5px solid var(--oranje);border-radius:1.2mm;line-height:1;transform:translateY(-1px)}
 .kern{display:grid;gap:2mm}
 .kern div{font-size:7.6pt;color:#C7CEDD;line-height:1.35}
 .kern b{color:#fff;display:block;font-size:8pt}
 /* ---------- hoofd ---------- */
-.main{position:relative;padding:8mm 10mm 8mm 10mm}
+.main{position:relative;padding:7mm 10mm 8mm 10mm}
 .main::before{content:"";position:absolute;right:-30mm;top:-30mm;width:80mm;height:80mm;border-radius:50%;border:14mm solid rgba(242,101,34,.07)}
 .name{font-family:'Playfair',serif;font-weight:700;font-size:31pt;line-height:1;letter-spacing:-.01em;color:var(--navy)}
 .name b{color:var(--oranje);font-weight:700}
@@ -180,7 +195,7 @@ h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18e
 .foot{position:absolute;left:0;right:0;bottom:0;height:6.5mm;background:linear-gradient(90deg,var(--navy) 70mm,var(--oranje) 70mm,var(--oranje));display:flex;align-items:center;justify-content:flex-end;padding-right:10mm}
 .foot span{font-size:6.6pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-top:3.2mm}
-.stats div{display:flex;align-items:baseline;gap:1.6mm;padding:1.6mm 2.4mm;border-radius:2mm;background:linear-gradient(135deg,#F4F6FA,#FFFFFF);border:1px solid var(--line)}
+.stats div{display:flex;align-items:baseline;gap:1.6mm;padding:1.2mm 2.2mm;border-radius:2mm;background:linear-gradient(135deg,#F4F6FA,#FFFFFF);border:1px solid var(--line)}
 .stats b{font-family:'Playfair',serif;font-size:14pt;font-weight:700;color:var(--oranje);line-height:1}
 .stats span{font-size:6.6pt;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--navy2);line-height:1.15}
 .now{display:inline-block;width:1.8mm;height:1.8mm;border-radius:50%;background:var(--c);margin-right:1.2mm;vertical-align:middle;box-shadow:0 0 0 1.2mm color-mix(in srgb,var(--c) 22%,white)}
@@ -196,12 +211,15 @@ def html(t):
       <li>{ICONS['web']}<div><small>Website</small>huurdirect.eu</div></li>
     </ul>"""
     talen = "".join(f"<div><b>{n}</b><span>{lvl}</span><div class=dots>{''.join('<i class=on></i>' if i<k else '<i></i>' for i in range(5))}</div></div>" for n,lvl,k in t['taal'])
-    tags = "".join(f"<span class='{'hi' if i==0 else ''}'>{s}</span>" for i,s in enumerate(t['skills']))
+    def tag(naam):
+        hi = naam in ("Ondernemerschap", "Entrepreneurship")
+        return f"<span class='{'hi' if hi else ''}'>{naam}</span>"
+    tags = "".join(f"<div class=grp><small>{g}</small><div class=tags>{''.join(tag(x) for x in items)}</div></div>" for g, items in t['skills'])
     edu = "".join(f"<div style='--c:{s['kleur']}'><b>{s['titel']}</b><em>{s['org']}</em><span>{s['periode']}</span><small>{s['extra']}</small></div>" for s in t['scholen'])
     kern = "".join(f"<div><b>{k}</b>{v}</div>" for k,v in t['kernpunten'])
     stats = "".join(f"<div><b>{n}</b><span>{l}</span></div>" for n,l in t['stats'])
     jobs = "".join(f"""
-      <article class=job style='--c:{b['kleur']}' data-mono='{b['mono']}'>
+      <article class=job style='--c:{b['kleur']}' data-mono='{b['mono']}'><span class=wm>{b['mono']}</span>
         <header><h4>{b['titel']} <span>· {b['org']}</span></h4><time>{'<i class=now></i>' if ('heden' in b['periode'] or 'present' in b['periode']) else ''}{b['periode']}{' <em>· ' + b['plaats'] + '</em>' if b['plaats'] else ''}</time></header>
         <div class=ctx>{b['context']}</div>
         <ul>{''.join(f'<li>{p}</li>' for p in b['punten'])}</ul>
@@ -210,21 +228,22 @@ def html(t):
     return f"""<!doctype html><html lang={t['lang']}><head><meta charset=utf-8><title>{t['titel']}</title>
 <style>{CSS.replace("%(INTER)s", INTER).replace("%(PLAYFAIR)s", PLAYFAIR)}</style></head><body>
 <div class=page>
-  <aside class=side>
+  <aside class=side><div class=glow></div>
     <div class=photo><img src="data:image/jpeg;base64,{FOTO}" alt="Tim Hendriks"></div>
     <h3>{t['contact']}</h3>{contact}
     <h3>{t['talen']}</h3><div class=lang>{talen}</div>
-    <h3>{t['vaardigheden']}</h3><div class=tags>{tags}</div>
+    <h3>{t['vaardigheden']}</h3><div class=grps>{tags}</div>
     <h3>{t['opleiding']}</h3><div class=edu>{edu}</div>
-    <div class=tagline><b>{t['motto']}</b>{t['tagline']}</div>
+    <div class=bottom><div class=tagline><b>{t['motto']}</b>{t['tagline']}</div><div class=qr>{QR}<small>{t['qrlabel']}</small></div></div>
   </aside>
   <main class=main>
+    <div class=eyebrow>{t['eyebrow']}</div>
     <div class=name>{naam}</div>
     <div class=role><i></i>{t['rol']} <span>· {t['rol2']}</span></div>
-    <h2>{t['profiel']}<small>{'wie ik ben' if t['lang']=='nl' else 'who I am'}</small></h2>
+    <h2><b>01</b>{t['profiel']}<small>{'wie ik ben' if t['lang']=='nl' else 'who I am'}</small></h2>
     <p class=profile>{t['profieltekst']}</p>
     <div class=stats>{stats}</div>
-    <h2>{t['werk']}<small>{'tijdlijn' if t['lang']=='nl' else 'timeline'}</small></h2>
+    <h2><b>02</b>{t['werk']}<small>{'tijdlijn' if t['lang']=='nl' else 'timeline'}</small></h2>
     <div class=tl>{jobs}</div>
   </main>
   <div class=foot><span>Tim Hendriks · tim@timos.nl · 06 30 26 51 20 · huurdirect.eu</span></div>
