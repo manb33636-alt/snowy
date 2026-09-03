@@ -5,8 +5,10 @@ HIER = pathlib.Path(__file__).parent
 def b64(p): return base64.b64encode((HIER / p).read_bytes()).decode()
 
 FOTO = b64("foto-tim.jpg")
-INTER = b64("fonts/Inter.woff2")
-PLAYFAIR = b64("fonts/PlayfairDisplay.woff2")
+# Statische TTF-lettertypes: Chromium sluit die als echte TrueType in de PDF in (variabele fonts worden Type3)
+FONTFACES = "".join(
+  f"@font-face{{font-family:'Inter';src:url(data:font/ttf;base64,{b64(f'fonts/Inter-{w}.ttf')}) format('truetype');font-weight:{w};}}" for w in (400, 500, 600, 700)
+) + f"@font-face{{font-family:'Playfair';src:url(data:font/ttf;base64,{b64('fonts/PlayfairDisplay-700.ttf')}) format('truetype');font-weight:700;}}"
 QR = (HIER / "qr-linkedin.svg").read_text()
 
 ICONS = {
@@ -20,7 +22,7 @@ ICONS = {
 T = {
  "nl": dict(
   bestand="cv-tim-hendriks-nl.html", lang="nl", titel="CV Tim Hendriks",
-  rol="Mede-oprichter HuurDirect", rol2="Student International Business",
+  rol="Medeoprichter HuurDirect", rol2="Student International Business",
   tagline="“Snel schakelen, de lat hoog leggen en altijd blijven leren.”", motto="Motto",
   stats=[("5+","jaar werkervaring"),("3","talen"),("2","landen gewerkt"),("8","rollen vervuld")],
   contact="Contact", plaats="’s-Hertogenbosch",
@@ -32,11 +34,11 @@ T = {
   scholen=[dict(kleur="#5B3DBF", titel="MBO 4 International Business", org="Summa College · Eindhoven", periode="2024 – 2027 (verwacht)", extra="Spaans, marketing, export, sales"),
            dict(kleur="#D6455F", titel="HAVO", org="Maurick College · Vught", periode="2018 – 2024", extra="Economie, wiskunde, natuurkunde, scheikunde, biologie")],
   profiel="Profiel",
-  profieltekst="Ondernemende student International Business met een commerciële instelling en een brede basis: sales, klantcontact, logistiek en internationale handel, in Nederland en Spanje. Ik pak dingen aan, schakel snel tussen rollen en leer het liefst door te doen. Als mede-oprichter van <b>HuurDirect</b> weet ik wat het is om iets vanaf nul op te bouwen, met een hoge lat voor kwaliteit.",
+  profieltekst="Ondernemende student International Business met een commerciële instelling en een brede basis: sales, klantcontact, logistiek en internationale handel, in Nederland en Spanje. Ik pak dingen aan, schakel snel tussen rollen en leer het liefst door te doen. Als medeoprichter van <b>HuurDirect</b> weet ik wat het is om iets vanaf nul op te bouwen, met een hoge lat voor kwaliteit.",
   werk="Werkervaring", kern="Kernkwaliteiten",
   kernpunten=[("Eigenaarschap","Neemt verantwoordelijkheid voor het hele resultaat."),("Flexibel","Bewezen in sales, service, logistiek en ondernemen."),("Leergierig","Maakt zich nieuwe systemen en tools snel eigen.")],
   banen=[
-   dict(mono="HD", kleur="#F26522", titel="Mede-oprichter", org="HuurDirect", periode="jan 2026 – heden", plaats="Noord-Brabant · hybride",
+   dict(mono="HD", kleur="#F26522", titel="Medeoprichter", org="HuurDirect", periode="jan 2026 – heden", plaats="Noord-Brabant · hybride",
         context="Online verhuurplatform voor professioneel gereedschap, machines en materieel.",
         punten=["Platform mee opgezet vanaf nul: propositie, assortiment, merk en website; live en continu verbeterd.",
                 "Verantwoordelijk voor het verhuurproces van reservering tot bezorging en retour, plus klantcontact en administratie.",
@@ -74,7 +76,7 @@ T = {
   skills=[("Commercial",["Sales","Customer contact","Communication","Leadership"]),("Digital",["Online marketing","SEO & conversion","Web shop management","AI tools"]),("Personal",["Entrepreneurship","Planning","Critical thinking"])],
   eyebrow="Curriculum vitae · 2026", qrlabel="LinkedIn",
   opleiding="Education",
-  scholen=[dict(kleur="#5B3DBF", titel="International Business (MBO 4)", org="Summa College · Eindhoven", periode="2024 – 2027 (expected)", extra="Spanish, marketing, export, sales"),
+  scholen=[dict(kleur="#5B3DBF", titel="International Business (MBO 4, EQF 4)", org="Summa College · Eindhoven", periode="2024 – 2027 (expected)", extra="Spanish, marketing, export, sales"),
            dict(kleur="#D6455F", titel="HAVO (senior secondary)", org="Maurick College · Vught", periode="2018 – 2024", extra="Economics, mathematics, physics, chemistry, biology")],
   profiel="Profile",
   profieltekst="Entrepreneurial International Business student with a commercial mindset and a broad base: sales, customer contact, logistics and international trade, in the Netherlands and Spain. I take initiative, switch quickly between roles and prefer to learn by doing. As co-founder of <b>HuurDirect</b> I know what it takes to build something from scratch, with a high bar for quality.",
@@ -111,8 +113,7 @@ T = {
 }
 
 CSS = """
-@font-face{font-family:'Inter';src:url(data:font/woff2;base64,%(INTER)s) format('woff2');font-weight:100 900;}
-@font-face{font-family:'Playfair';src:url(data:font/woff2;base64,%(PLAYFAIR)s) format('woff2');font-weight:400 900;}
+%(FONTFACES)s
 :root{--navy:#121C33;--navy2:#1B2A49;--oranje:#F26522;--ink:#1F2433;--muted:#6B7280;--line:#E6E8EE;--paper:#FFFFFF;}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:210mm;height:297mm;background:var(--paper);font-family:'Inter',system-ui,sans-serif;color:var(--ink);font-size:8.3pt;line-height:1.36;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -164,13 +165,12 @@ h2 b{font-family:'Inter';font-weight:700;font-size:8pt;color:var(--oranje);paddi
 .kern b{color:#fff;display:block;font-size:8pt}
 /* ---------- hoofd ---------- */
 .main{position:relative;padding:7mm 10mm 8mm 10mm}
-.main::before{content:"";position:absolute;right:-30mm;top:-30mm;width:80mm;height:80mm;border-radius:50%;border:14mm solid rgba(242,101,34,.07)}
+.main::before{content:"";position:absolute;right:-34mm;top:-38mm;width:80mm;height:80mm;border-radius:50%;border:14mm solid rgba(242,101,34,.07)}
 .name{font-family:'Playfair',serif;font-weight:700;font-size:31pt;line-height:1;letter-spacing:-.01em;color:var(--navy)}
 .name b{color:var(--oranje);font-weight:700}
 .role{margin-top:2.6mm;display:flex;align-items:center;gap:2.5mm;font-size:7.6pt;font-weight:600;letter-spacing:.1em;white-space:nowrap;text-transform:uppercase;color:var(--navy2)}
 .role i{width:9mm;height:2px;background:var(--oranje);display:inline-block}
 .role span{color:var(--muted);font-weight:500}
-.role::after{content:"";flex:1;height:1px;background:var(--line);margin-left:2mm}
 h2{font-family:'Playfair',serif;font-weight:700;font-size:12.5pt;color:var(--navy);margin:3.8mm 0 2.2mm;display:flex;align-items:baseline;gap:3mm}
 h2 small{font-family:'Inter';font-weight:600;font-size:6.6pt;letter-spacing:.18em;text-transform:uppercase;color:var(--oranje)}
 .profile{font-size:8.4pt;line-height:1.4;color:#2B3143;padding-left:4mm;border-left:2.5px solid var(--oranje)}
@@ -226,7 +226,7 @@ def html(t):
       </article>""" for b in t['banen'])
     naam = "Tim <b>Hendriks</b>"
     return f"""<!doctype html><html lang={t['lang']}><head><meta charset=utf-8><title>{t['titel']}</title>
-<style>{CSS.replace("%(INTER)s", INTER).replace("%(PLAYFAIR)s", PLAYFAIR)}</style></head><body>
+<style>{CSS.replace("%(FONTFACES)s", FONTFACES)}</style></head><body>
 <div class=page>
   <aside class=side><div class=glow></div>
     <div class=photo><img src="data:image/jpeg;base64,{FOTO}" alt="Tim Hendriks"></div>
