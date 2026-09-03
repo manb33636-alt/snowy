@@ -193,7 +193,7 @@ def html(t):
       <li>{ICONS['mail']}<div><small>E-mail</small>tim@timos.nl</div></li>
       <li>{ICONS['pin']}<div><small>{ 'Woonplaats' if t['lang']=='nl' else 'Location'}</small>{t['plaats']}</div></li>
       <li>{ICONS['in']}<div><small>LinkedIn</small>linkedin.com/in/tim-hendriks-98905b328</div></li>
-      <li>{ICONS['web']}<div><small>Website</small>huurdirect.nl · huurdirect.eu</div></li>
+      <li>{ICONS['web']}<div><small>Website</small>huurdirect.eu</div></li>
     </ul>"""
     talen = "".join(f"<div><b>{n}</b><span>{lvl}</span><div class=dots>{''.join('<i class=on></i>' if i<k else '<i></i>' for i in range(5))}</div></div>" for n,lvl,k in t['taal'])
     tags = "".join(f"<span class='{'hi' if i==0 else ''}'>{s}</span>" for i,s in enumerate(t['skills']))
