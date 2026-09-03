@@ -115,7 +115,7 @@ const zijbalk = [
   zkop("Opleiding"),
   zlabel("MBO 4 International Business"),
   ztekst("Summa College, Eindhoven"),
-  ztekst("2024 – heden"),
+  ztekst("2024 – 2027 (verwacht)"),
   ztekst("Vakken: Spaans, marketing, export, sales"),
   zlabel("HAVO"),
   ztekst("Maurick College, Vught"),
@@ -129,49 +129,51 @@ const hoofd = [
   new Paragraph({
     spacing: { after: 80 },
     border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: ACCENT, space: 6 } },
-    children: [run("Ondernemer  ·  Oprichter HuurDirect  ·  Student International Business", { size: 24, color: GRIJS })],
+    children: [run("Mede-oprichter HuurDirect  ·  Student International Business", { size: 24, color: GRIJS })],
   }),
 
   kop("Profiel"),
   par([run(
-    "Ondernemende student International Business en oprichter van HuurDirect, een online verhuurplatform " +
-    "voor professioneel gereedschap, machines en materieel. Ik heb het platform vanaf nul opgebouwd en ben " +
-    "verantwoordelijk voor het complete plaatje: van propositie, merk en website tot het verhuurproces en " +
-    "de klantenservice. Daarnaast heb ik ervaring in sales, klantenservice en logistiek, waardoor ik snel " +
+    "Ondernemende student International Business en mede-oprichter van HuurDirect, een online " +
+    "verhuurplatform voor professioneel gereedschap, machines en materieel. Ik heb het platform mee " +
+    "opgebouwd vanaf nul en werk aan het complete plaatje: propositie, merk, website, verhuurproces en " +
+    "klantenservice. Daarnaast heb ik ervaring in sales, klantenservice en logistiek, waardoor ik snel " +
     "schakel tussen verschillende rollen. Ik werk gestructureerd, stel hoge eisen aan kwaliteit en zet " +
     "automatisering en AI-tools in om slimmer te werken."
   )]),
 
   kop("Werkervaring"),
-  functie("Oprichter en eigenaar — HuurDirect", [invul("startjaar"), run(" – heden", { color: GRIJS, size: 20 })]),
-  sub("Online verhuurplatform voor gereedschap, machines en materieel  ·  ’s-Hertogenbosch"),
-  bullet("Het platform vanaf nul opgezet: propositie, assortiment, merkidentiteit en website. De site is live en wordt continu verbeterd."),
-  bullet("Verantwoordelijk voor het volledige verhuurproces: van productselectie en reservering tot bezorging, afhalen en retour."),
-  bullet("Klantcontact, offertes en administratie; stuurt op een snelle, transparante en betrouwbare klantervaring."),
+  functie("Mede-oprichter — HuurDirect", "jan 2026 – heden"),
+  sub("Online verhuurplatform voor gereedschap, machines en materieel  ·  Noord-Brabant  ·  hybride"),
+  bullet("Het platform mee opgezet vanaf nul: propositie, assortiment, merkidentiteit en website. De site is live en wordt continu verbeterd."),
+  bullet("Verantwoordelijk voor het verhuurproces van reservering tot bezorging, afhalen en retour, plus klantcontact en administratie."),
   bullet("Online marketing, SEO en conversie-optimalisatie om zichtbaarheid en omzet te laten groeien."),
   bullet("Beheerpaneel en automatisering ingericht zodat het bedrijf zonder extra handwerk kan opschalen."),
 
-  functie("Stagiair — Contronics Dry Misting", "sep 2024 – dec 2025"),
-  sub("Innovatieve en duurzame vernevelingstechniek  ·  stage vanuit de opleiding International Business"),
-  bullet("Breed meegedraaid in het bedrijf: dossiers en administratie op orde gebracht en meegedacht over nieuwe ideeën."),
-  bullet("Het team geholpen met de voorbereiding van een grote vakbeurs en zo bijgedragen aan de zichtbaarheid van het bedrijf op de beurs."),
+  functie("Privéchauffeur — Van Dijk Services", "mrt 2026 – heden"),
+  sub("Parttime  ·  ’s-Hertogenbosch"),
+  bullet("Klanten representatief, discreet en stipt op tijd vervoerd; zelfstandig ritten gepland en uitgevoerd."),
 
-  functie("Bezorger — I Love Sushi", "sep 2022 – heden"),
+  functie("Logistiek medewerker — Monta", "jul 2025 – heden"),
+  sub("Parttime  ·  e-commerce fulfilment  ·  Engelen"),
+  bullet("Orders verzamelen, inpakken en verzendklaar maken; nauwkeurig werken en tempo houden in piekperiodes."),
+
+  functie("Stagiair — Contronics Dry Misting", "sep 2024 – dec 2025"),
+  sub("Stage vanuit de opleiding International Business  ·  duurzame vernevelingstechniek"),
+  bullet("Breed meegedraaid: dossiers en administratie op orde gebracht, meegedacht over nieuwe ideeën en het team geholpen met de voorbereiding van een grote vakbeurs."),
+
+  functie("Bezorger — I Love Sushi", [run("sep 2022 – ", { color: GRIJS, size: 20 }), invul("einddatum")]),
   sub("’s-Hertogenbosch"),
-  bullet("Bestellingen efficiënt en op tijd bezorgd bij klanten in en rond ’s-Hertogenbosch."),
-  bullet("Hoge klanttevredenheid door bestellingen correct en in goede staat af te leveren."),
-  bullet("Routes zelf gepland om de bezorgtijd te verkorten en meer ritten per dienst te halen."),
+  bullet("Bestellingen efficiënt en op tijd bezorgd; routes zelf gepland en hoge klanttevredenheid door correcte levering."),
 
   functie("Sales Representative — Face to Face", "jul 2021 – aug 2022"),
   sub("’s-Hertogenbosch"),
-  bullet("Potentiële klanten benaderd om producten te promoten en te verkopen; maandelijkse verkoopdoelen behaald."),
-  bullet("Sterke klantrelaties opgebouwd door goede service, met terugkerende klanten als resultaat."),
+  bullet("Klanten benaderd om producten te promoten en te verkopen; maandelijkse verkoopdoelen behaald en terugkerende klanten opgebouwd."),
   bullet("Nauw samengewerkt met het marketingteam om verkoop en campagnes op elkaar af te stemmen."),
 
   kop("Kernkwaliteiten"),
   bullet([run("Eigenaarschap: ", { bold: true }), run("neemt verantwoordelijkheid voor het hele resultaat, niet alleen voor een deel.")]),
-  bullet([run("Kwaliteitsgericht: ", { bold: true }), run("blijft verbeteren tot iets echt goed werkt voor de klant.")]),
-  bullet([run("Flexibel: ", { bold: true }), run("bewezen in uiteenlopende rollen, van sales en klantenservice tot logistiek.")]),
+  bullet([run("Flexibel: ", { bold: true }), run("bewezen in uiteenlopende rollen, van sales en klantenservice tot logistiek en ondernemen.")]),
   bullet([run("Leergierig: ", { bold: true }), run("maakt zich nieuwe systemen en tools snel eigen en past ze direct toe.")]),
 ];
 
